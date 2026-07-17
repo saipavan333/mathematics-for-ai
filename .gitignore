@@ -1,0 +1,7 @@
+# scratch / build artifacts — not part of the site
+err.txt
+__synctest.js
+content/__synctest.js
+*.log
+.DS_Store
+Thumbs.db

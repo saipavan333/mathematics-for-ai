@@ -1,0 +1,80 @@
+@reg(1)
+def d_1_1():
+    cv=Canvas(660,300)
+    cv.title(330,22,"exp and log are mirror images across the line y = x")
+    F=Frame(cv,70,40,520,220,-2.6,4.2,-2.6,4.2)
+    for k in range(-2,5):
+        cv.line(F.X(k),F.py,F.X(k),F.py+F.ph,stroke=PAL["grid"],w=1)
+        cv.line(F.px,F.Y(k),F.px+F.pw,F.Y(k),stroke=PAL["grid"],w=1)
+    F.axes()
+    cv.poly([F.P(-2.6,-2.6),F.P(4.2,4.2)],stroke=PAL["axis"],w=1.3,dash="5 4")
+    cv.text(F.X(3.7),F.Y(3.35),"y = x",fill=PAL["ink3"],size=10.5,anchor="start")
+    cv.poly(F.curve(lambda x:2**x,-2.6,2.06,clipy=(-2.6,4.2)),stroke=PAL["indigo"],w=2.4)
+    cv.text(F.X(1.5),F.Y(3.9),"y = 2ˣ",fill=PAL["indigo"],size=12,anchor="end",weight="600")
+    cv.poly(F.curve(lambda x:math.log2(x),0.16,4.2,clipy=(-2.6,4.2)),stroke=PAL["green"],w=2.4)
+    cv.text(F.X(4.15),F.Y(1.7),"y = log₂x",fill=PAL["green"],size=12,anchor="end",weight="600")
+    for (x,y) in [(1,2),(2,1)]: cv.dot(*F.P(x,y),fill=PAL["ink"])
+    cv.line(*F.P(1,2),*F.P(2,1),stroke=PAL["amber"],w=1.3,dash="3 3")
+    cv.text(F.X(1)-6,F.Y(2),"(1, 2)",anchor="end",fill=PAL["ink2"],size=10)
+    cv.text(F.X(2)+6,F.Y(1),"(2, 1)",anchor="start",fill=PAL["ink2"],size=10)
+    caption(cv,"Reflecting a point of 2ˣ across y = x lands on log₂x — that is what “inverse” means.")
+    return "1.1",cv.svg()
+@reg(1)
+def d_1_2():
+    cv=Canvas(660,300)
+    cv.title(330,22,"Σ just means: line the terms up and add them")
+    terms=[3,1,4,1,5]; total=sum(terms)
+    F=Frame(cv,60,50,450,200,0,7,0,15)
+    F.axes(); bw=44; xs=[1,2,3,4,5]
+    for i,(xi,t) in enumerate(zip(xs,terms)):
+        x=F.X(xi)-bw/2; y=F.Y(t)
+        cv.rect(x,y,bw,F.Y(0)-y,fill=PAL["blueF"],stroke=PAL["blue"],sw=1.3,rx=3)
+        cv.text(F.X(xi),y-6,str(t),fill=PAL["blue"],size=12,weight="600")
+        cv.text(F.X(xi),F.Y(0)+16,["a₁","a₂","a₃","a₄","a₅"][i],fill=PAL["ink3"],size=11)
+    x=F.X(6.3)-bw/2; y=F.Y(total)
+    cv.rect(x,y,bw,F.Y(0)-y,fill=PAL["indigoF"],stroke=PAL["indigo"],sw=1.5,rx=3)
+    cv.text(F.X(6.3),y-6,str(total),fill=PAL["indigo"],size=13,weight="700")
+    cv.text(F.X(6.3),F.Y(0)+16,"Σ",fill=PAL["indigo"],size=13,weight="700")
+    cv.text(590,F.Y(11),"Σᵢ₌₁⁵ aᵢ",anchor="middle",fill=PAL["ink"],size=13,weight="600")
+    cv.text(590,F.Y(11)+18,"= 3+1+4+1+5",anchor="middle",fill=PAL["ink2"],size=10.5)
+    cv.text(590,F.Y(11)+33,"= 14",anchor="middle",fill=PAL["indigo"],size=11,weight="600")
+    caption(cv,"The index i walks 1→5; each step drops one more term into the running total.")
+    return "1.2",cv.svg()
+@reg(1)
+def d_1_3():
+    cv=Canvas(660,250)
+    cv.title(330,24,"A composition f(g(x)) is two machines wired in series")
+    y=120
+    def box(cx,label,sub,fill,stroke):
+        cv.rect(cx-42,y-30,84,60,fill=fill,stroke=stroke,sw=1.6,rx=10)
+        cv.text(cx,y-2,label,fill=stroke,size=15,weight="700")
+        cv.text(cx,y+18,sub,fill=PAL["ink3"],size=10)
+    cv.text(95,y+5,"x = 3",fill=PAL["ink"],size=14,weight="600")
+    cv.arrow(130,y,188,y,stroke=PAL["axis"],w=2)
+    box(232,"g","add 1",PAL["blueF"],PAL["blue"])
+    cv.arrow(276,y,344,y,stroke=PAL["axis"],w=2)
+    cv.text(310,y-12,"g(3) = 4",fill=PAL["ink2"],size=10.5)
+    box(388,"f","square",PAL["greenF"],PAL["green"])
+    cv.arrow(432,y,500,y,stroke=PAL["axis"],w=2)
+    cv.text(560,y+5,"16",fill=PAL["indigo"],size=16,weight="700")
+    cv.text(560,y+26,"f(g(3))",fill=PAL["ink3"],size=10.5)
+    cv.text(330,205,"Order matters: f(g(x)) squares last; g(f(x)) would square first, then add 1.",fill=PAL["ink3"],size=10.5,style="italic")
+    return "1.3",cv.svg()
+@reg(1)
+def d_1_4():
+    cv=Canvas(660,300)
+    cv.title(330,22,"Big-O: how cost grows as the input n gets large")
+    F=Frame(cv,60,42,470,210,1,12,0,46); ymax=46
+    F.axes(xlabel="n →",ylabel="operations")
+    xexit=math.sqrt(ymax)
+    curves=[(lambda n:n*math.log2(n),PAL["violet"],"O(n log n)",10.4,3),
+            (lambda n:n,PAL["amber"],"O(n)",11.3,-6),
+            (lambda n:math.log2(n),PAL["blue"],"O(log n)",11.1,-2),
+            (lambda n:1.0,PAL["green"],"O(1)",11.6,-6)]
+    for f,col,lab,lx,dy in curves:
+        cv.poly(F.curve(f,1,12),stroke=col,w=2.3)
+        yv=min(f(lx),ymax-1); cv.text(F.X(lx)+6,F.Y(yv)+dy,lab,fill=col,size=11,anchor="start",weight="600")
+    cv.poly(F.curve(lambda n:n*n,1,xexit),stroke=PAL["red"],w=2.4)
+    cv.text(F.X(xexit)-8,F.Y(ymax)-6,"O(n²)",fill=PAL["red"],size=11,anchor="end",weight="600")
+    caption(cv,"Right-edge order is locked: O(1) < O(log n) < O(n) < O(n log n) < O(n²) — the last is why attention is costly.")
+    return "1.4",cv.svg()

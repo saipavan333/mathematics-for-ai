@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mathematics for AI Engineers — In Depth, Plain English</title>
+
+<!-- KaTeX for math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<!-- Pyodide: runs NumPy / matplotlib in the browser -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app" id="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar ui" id="sidebar">
+    <div class="brand">
+      <div class="logo">∑</div>
+      <h1>Math for AI Engineers
+        <span>plain English · runnable · from scratch</span>
+      </h1>
+    </div>
+    <div class="search">
+      <input id="search" type="text" placeholder="Search lessons…" autocomplete="off">
+    </div>
+    <nav id="nav"><!-- built by app.js --></nav>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <div class="topbar ui">
+      <button class="iconbtn menu-toggle" id="menuToggle">☰</button>
+      <div class="crumbs" id="crumbs"></div>
+      <div class="spacer"></div>
+      <button class="iconbtn" id="themeToggle" title="Toggle light / dark">◐ Theme</button>
+    </div>
+    <div class="content-wrap">
+      <article class="content" id="content"><!-- lesson rendered here --></article>
+      <nav class="lesson-nav" id="lessonNav"></nav>
+    </div>
+  </main>
+</div>
+
+<div id="py-status" class="ui">Booting Python…</div>
+
+<!-- curriculum map (titles + syllabus for every lesson) -->
+<script src="curriculum.js"></script>
+
+<!-- lesson content, one file per track -->
+<script src="content/track01.js"></script>
+<script src="content/track02.js"></script>
+<script src="content/track03.js"></script>
+<script src="content/track04.js"></script>
+<script src="content/track05.js"></script>
+<script src="content/track06.js"></script>
+<script src="content/track07.js"></script>
+<script src="content/track08.js"></script>
+<script src="content/track09.js"></script>
+<script src="content/track10.js"></script>
+<script src="content/track11.js"></script>
+<script src="content/track12.js"></script>
+<script src="content/track13.js"></script>
+<script src="content/track14.js"></script>
+<script src="content/track15.js"></script>
+<script src="content/track16.js"></script>
+<script src="content/track17.js"></script>
+<script src="content/capstones.js"></script>
+<script src="content/nutshells.js"></script>
+<script src="content/diagrams.js"></script>
+<script src="content/widgets.js"></script>
+
+<!-- engine: navigation, rendering, code execution -->
+<script src="app.js"></script>
+</body>
+</html>
