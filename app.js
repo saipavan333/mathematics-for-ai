@@ -688,7 +688,6 @@ _json.dumps(__imgs)`;
     const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
     let raf = 0;
     function frame() {
-      if (document.hidden) { raf = 0; return; }
       ctx.clearRect(0, 0, W, H);
       for (const p of pts) {
         const dx = mouse.x - p.x, dy = mouse.y - p.y, d2 = dx * dx + dy * dy;
@@ -723,7 +722,7 @@ _json.dumps(__imgs)`;
     const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
     let raf = 0, t = 0;
     function frame() {
-      if (!cv.isConnected || document.hidden) { raf = 0; return; }
+      if (!cv.isConnected) { raf = 0; return; }
       ctx.clearRect(0, 0, W, H); t += 0.006;
       for (const b of blobs) {
         b.x += b.vx + Math.sin(t + b.ph) * 0.14; b.y += b.vy + Math.cos(t * 0.8 + b.ph) * 0.11;
