@@ -416,11 +416,10 @@
       while (typeof loadPyodide === "undefined" && tries++ < 100) await new Promise(r => setTimeout(r, 100));
       if (typeof loadPyodide === "undefined") throw new Error("Pyodide failed to load (check your internet connection).");
       const py = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/" });
-      setStatus("Installing NumPy + matplotlib…");
-      await py.loadPackage(["numpy", "matplotlib"]);
+      setStatus("Installing NumPy…");
+      await py.loadPackage(["numpy"]);            // essential; matplotlib loads lazily per cell
       py.setStdout({ batched: s => outBuf.push(s) });
       py.setStderr({ batched: s => outBuf.push(s) });
-      await py.runPythonAsync("import matplotlib; matplotlib.use('AGG')");
       setStatus("");
       return py;
     })();
@@ -449,7 +448,10 @@ _json.dumps(__imgs)`;
       outBuf = [];
       let result;
       try {
-        try { setStatus("Loading libraries…"); await py.loadPackagesFromImports(code); setStatus(""); } catch (e) { setStatus(""); }
+        try { setStatus("Loading libraries…"); await py.loadPackagesFromImports(code); } catch (e) {}
+        /* set a headless backend only if matplotlib actually loaded — never fatal */
+        try { await py.runPythonAsync("try:\n    import matplotlib\n    matplotlib.use('AGG')\nexcept Exception:\n    pass"); } catch (e) {}
+        setStatus("");
         result = await py.runPythonAsync(code);
       } catch (err) {
         outPre.className = "err";
@@ -685,7 +687,7 @@ _json.dumps(__imgs)`;
     size();
     const mouse = { x: -999, y: -999 };
     window.addEventListener("pointermove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+    const reduce = false; /* animations always on, by explicit request */
     let raf = 0;
     function frame() {
       ctx.clearRect(0, 0, W, H);
@@ -719,7 +721,7 @@ _json.dumps(__imgs)`;
     function size() { const r = cv.getBoundingClientRect(); W = r.width || 760; H = r.height || 200; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
     size();
     for (let i = 0; i < 6; i++) blobs.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .16, vy: (Math.random() - .5) * .12, r: Math.max(W, H) * (0.34 + Math.random() * 0.24), c: cols[i % cols.length], ph: Math.random() * 7 });
-    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+    const reduce = false; /* animations always on, by explicit request */
     let raf = 0, t = 0;
     function frame() {
       if (!cv.isConnected) { raf = 0; return; }
