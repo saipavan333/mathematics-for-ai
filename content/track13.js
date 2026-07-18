@@ -296,7 +296,7 @@ print("unstable var  :", unstable, " stable var:", round(float(stable), 4))
   work, $\approx\tfrac23 n^3$ flops). For a symmetric matrix, $L$ and $U$ carry the same information twice.</p>
   <p><strong>Step 2 — Cholesky exploits it.</strong> Writing $A=LL^\top$ finds a single triangular factor and its
   transpose, halving the work to $\approx\tfrac13 n^3$. The entries come from
-  $L_{jj}=\sqrt{A_{jj}-\sum_{k<j}L_{jk}^2}$ and $L_{ij}=\big(A_{ij}-\sum_{k<j}L_{ik}L_{jk}\big)/L_{jj}$.</p>
+  $L_{jj}=\sqrt{A_{jj}-\sum_{k&lt;j}L_{jk}^2}$ and $L_{ij}=\big(A_{ij}-\sum_{k&lt;j}L_{ik}L_{jk}\big)/L_{jj}$.</p>
   <p><strong>Step 3 — the square root demands positive-definiteness.</strong> $L_{jj}$ takes a square root of a diagonal
   quantity; that quantity is positive for <em>every</em> $j$ exactly when $A$ is positive definite (Track 5.3). If it ever
   goes $\le0$, Cholesky fails — which is precisely how libraries <em>test</em> for positive-definiteness. $\blacksquare$

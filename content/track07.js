@@ -126,7 +126,7 @@ print("∫ p(x) dx =", round(float(np.trapz(p(x), x)), 6))   # ≈ 1.0
 
   aiMoment: String.raw`<p>A probability's <strong>CDF</strong> $F(x)=P(X\le x)$ and its <strong>density</strong> $p(x)$
   are linked by the Fundamental Theorem of Calculus: differentiate the CDF to get the density, integrate the density to
-  get the CDF. That's why $p(x)=F'(x)$ and $F(b)-F(a)=P(a<X\le b)$. The FTC is the hinge connecting accumulation
+  get the CDF. That's why $p(x)=F'(x)$ and $F(b)-F(a)=P(a&lt;X\le b)$. The FTC is the hinge connecting accumulation
   (probability) and rate (density).</p>`,
 
   plainEnglish: String.raw`<p>The Fundamental Theorem says the two big operations of calculus undo each other: if you
@@ -153,7 +153,7 @@ print("∫ p(x) dx =", round(float(np.trapz(p(x), x)), 6))   # ≈ 1.0
   integral returns the integrand). <strong>FTC Part 2:</strong> if $F'=f$, then</p>
   $$\int_a^b f(x)\,dx=F(b)-F(a).$$
   <p>For probability, the CDF is $F(x)=\int_{-\infty}^{x}p(t)\,dt$, so the density is $p(x)=F'(x)$ and
-  $P(a<X\le b)=F(b)-F(a)$.</p>`,
+  $P(a&lt;X\le b)=F(b)-F(a)$.</p>`,
 
   derivation: String.raw`<p><strong>Proof of FTC Part 1.</strong> Let $A(x)=\int_a^x f(t)\,dt$.</p>
   <p><strong>Step 1 — difference quotient.</strong> $A(x+h)-A(x)=\int_x^{x+h} f(t)\,dt$ — the area of a thin strip from
@@ -196,7 +196,7 @@ print("pdf(x)   :", round(float(pdf(x)), 6))            # equal -> p(x)=F'(x)
     "FTC1: $\\frac{d}{dx}\\int_a^x f(t)\\,dt=f(x)$ — differentiation undoes integration.",
     "FTC2: $\\int_a^b f=F(b)-F(a)$ for any antiderivative $F$ — one subtraction, not an infinite sum.",
     "The density is the derivative of the CDF: $p(x)=F'(x)$.",
-    "$P(a<X\\le b)=F(b)-F(a)$ — probabilities are CDF differences.",
+    "$P(a&lt;X\\le b)=F(b)-F(a)$ — probabilities are CDF differences.",
     "The integration constant cancels in any definite integral."
   ],
 
@@ -213,7 +213,7 @@ print("pdf(x)   :", round(float(pdf(x)), 6))            # equal -> p(x)=F'(x)
       explain: "$F(2)-F(1)=8-1=7$." },
     { q: "The density $p(x)$ relates to the CDF $F$ by…", options: ["$p=F'$", "$F=p'$", "$p=\\int F$", "$p=1-F$"], answer: 0,
       explain: "Differentiate the CDF to get the density: $p(x)=F'(x)$." },
-    { q: "$P(a<X\\le b)$ equals…", options: ["$F(b)-F(a)$", "$F(a)-F(b)$", "$p(b)-p(a)$", "$F(b)$"], answer: 0,
+    { q: "$P(a&lt;X\\le b)$ equals…", options: ["$F(b)-F(a)$", "$F(a)-F(b)$", "$p(b)-p(a)$", "$F(b)$"], answer: 0,
       explain: "A probability over an interval is the difference of the CDF at the endpoints." },
     { q: "Why is the FTC powerful for definite integrals?", options: ["it replaces an infinite sum with one subtraction", "it makes all integrals elementary", "it removes the constant", "it differentiates densities"], answer: 0,
       explain: "Instead of summing infinitely many rectangles, evaluate an antiderivative at two endpoints." }

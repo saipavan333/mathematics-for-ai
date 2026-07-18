@@ -32,7 +32,7 @@
   </figure>`,
 
   formalism: String.raw`<p>A <strong>probability density function</strong> $p(x)$ satisfies $p(x)\ge0$ and $\int_{-\infty}^{\infty}p(x)\,dx=1$.
-  Probabilities are integrals: $P(a<X<b)=\int_a^b p(x)\,dx$. The <strong>CDF</strong> is
+  Probabilities are integrals: $P(a&lt;X&lt;b)=\int_a^b p(x)\,dx$. The <strong>CDF</strong> is
   $F(x)=P(X\le x)=\int_{-\infty}^{x}p(t)\,dt$, so $p=F'$ (Track 7.2). The <strong>uniform</strong> $\mathrm{U}(a,b)$ has
   constant density $p(x)=\tfrac{1}{b-a}$ on $[a,b]$.</p>`,
 
@@ -68,7 +68,7 @@ print("sample mean ≈", round(float(x.mean()), 3), " vs 1/λ =", round(1/lam, 3
   ],
 
   keyPoints: [
-    "A density $p(x)\\ge0$ integrates to 1; probability is area, $P(a<X<b)=\\int_a^b p$.",
+    "A density $p(x)\\ge0$ integrates to 1; probability is area, $P(a&lt;X&lt;b)=\\int_a^b p$.",
     "For continuous $X$, $P(X=x)=0$; only intervals have positive probability.",
     "Density is not probability — $p(x)$ can exceed 1 (it's probability per unit length).",
     "CDF $F(x)=\\int_{-\\infty}^x p$, and $p=F'$.",
@@ -77,7 +77,7 @@ print("sample mean ≈", round(float(x.mean()), 3), " vs 1/λ =", round(1/lam, 3
 
   commonMistakes: [
     { wrong: "Reading $p(x)$ as a probability.", why: "It's a density — probability per unit length — and can exceed 1 (e.g. $\\mathrm{U}(0,0.5)$ has $p=2$). Only its integral over an interval is a probability." },
-    { wrong: "Asking for $P(X=c)$ of a continuous variable.", why: "It's exactly 0. Continuous questions must be about ranges: $P(c-\\epsilon<X<c+\\epsilon)$." },
+    { wrong: "Asking for $P(X=c)$ of a continuous variable.", why: "It's exactly 0. Continuous questions must be about ranges: $P(c-\\epsilon&lt;X&lt;c+\\epsilon)$." },
     { wrong: "Forgetting to normalize a hand-built density.", why: "Any nonnegative function becomes a density only after dividing by its integral (the normalizing constant); otherwise the 'probabilities' won't sum to 1." }
   ],
 
@@ -95,7 +95,7 @@ print("sample mean ≈", round(float(x.mean()), 3), " vs 1/λ =", round(1/lam, 3
   ],
 
   practice: [
-    { level: "easy", prompt: "Give the density of $\\mathrm{U}(1,3)$ and $P(1.5<X<2)$.", solution: "Density $=1/(3-1)=1/2$ on $[1,3]$. $P(1.5<X<2)=(2-1.5)\\cdot\\tfrac12=0.25$." },
+    { level: "easy", prompt: "Give the density of $\\mathrm{U}(1,3)$ and $P(1.5&lt;X<2)$.", solution: "Density $=1/(3-1)=1/2$ on $[1,3]$. $P(1.5&lt;X<2)=(2-1.5)\\cdot\\tfrac12=0.25$." },
     { level: "med", prompt: "A density is $p(x)=cx$ on $[0,2]$, else 0. Find $c$.", solution: "Normalize: $\\int_0^2 cx\\,dx=c\\cdot\\tfrac{4}{2}=2c=1\\Rightarrow c=\\tfrac12$." },
     { level: "med", prompt: "Derive $F^{-1}$ for $\\mathrm{U}(a,b)$ and use it to sample.", solution: "$F(x)=\\frac{x-a}{b-a}$; set $u=F(x)$ and solve: $x=a+u(b-a)$. So $a+u(b-a)$ with $u\\sim\\mathrm{U}(0,1)$ samples $\\mathrm{U}(a,b)$." },
     { level: "hard", prompt: "AI task: to sample $\\mathrm{Exponential}(\\lambda)$ from uniform noise, derive $F^{-1}$ and state the formula.", solution: "The exponential CDF is $F(x)=1-e^{-\\lambda x}$ for $x\\ge0$. Invert: $u=1-e^{-\\lambda x}\\Rightarrow e^{-\\lambda x}=1-u\\Rightarrow x=-\\tfrac{1}{\\lambda}\\ln(1-u)$. So $x=-\\ln(1-u)/\\lambda$ (or equivalently $-\\ln(u)/\\lambda$ since $1-u$ is also uniform) transforms uniform noise into exponential samples — exactly how libraries generate waiting times." }

@@ -259,7 +259,7 @@ print("1 - (5/6)^4         :", round(1 - (5/6)**4, 4))     # complement rule
   subtitle: "Updating probability when you know something — and the chain rule a language model is built on.",
 
   aiMoment: String.raw`<p>A language model assigns a probability to text by the <strong>chain rule of probability</strong>:
-  $P(x_1,\dots,x_n)=\prod_t P(x_t\mid x_{<t})$ — each token conditioned on all the previous ones. That factorization
+  $P(x_1,\dots,x_n)=\prod_t P(x_t\mid x_{&lt;t})$ — each token conditioned on all the previous ones. That factorization
   <em>is</em> autoregressive generation. <strong>Conditional probability</strong> and <strong>independence</strong> are
   the machinery behind it, behind Naive Bayes, and behind every "given the evidence" calculation in ML.</p>`,
 
@@ -327,7 +327,7 @@ print("log P (stable)   =", round(float(np.log(p["the"])+np.log(p["cat|the"])+np
     "$P(A\\mid B)=P(A\\cap B)/P(B)$: condition by restricting to $B$ and re-normalizing.",
     "Multiplication rule: $P(A\\cap B)=P(A\\mid B)P(B)$.",
     "Independent ⇔ $P(A\\cap B)=P(A)P(B)$ ⇔ $P(A\\mid B)=P(A)$.",
-    "Chain rule: $P(x_1,\\dots,x_n)=\\prod_t P(x_t\\mid x_{<t})$ — the basis of language models.",
+    "Chain rule: $P(x_1,\\dots,x_n)=\\prod_t P(x_t\\mid x_{&lt;t})$ — the basis of language models.",
     "Conditional independence (given a third variable) underlies Naive Bayes."
   ],
 
@@ -342,7 +342,7 @@ print("log P (stable)   =", round(float(np.log(p["the"])+np.log(p["cat|the"])+np
       explain: "$P(A\\mid B)=0.2/0.5=0.4$." },
     { q: "$A,B$ independent with $P(A)=0.3$, $P(B)=0.5$. $P(A\\cap B)=$", options: ["0.15", "0.8", "0.2", "0.5"], answer: 0,
       explain: "Independence: $P(A)P(B)=0.3\\times0.5=0.15$." },
-    { q: "A language model's $P(x_1,\\dots,x_n)$ factorizes as…", options: ["$\\prod_t P(x_t\\mid x_{<t})$", "$\\sum_t P(x_t)$", "$\\prod_t P(x_t)$", "$P(x_1)P(x_n)$"], answer: 0,
+    { q: "A language model's $P(x_1,\\dots,x_n)$ factorizes as…", options: ["$\\prod_t P(x_t\\mid x_{&lt;t})$", "$\\sum_t P(x_t)$", "$\\prod_t P(x_t)$", "$P(x_1)P(x_n)$"], answer: 0,
       explain: "Chain rule: each token conditioned on all previous ones — autoregressive factorization." },
     { q: "If $P(A\\mid B)=P(A)$, then $A$ and $B$ are…", options: ["independent", "mutually exclusive", "equal", "complementary"], answer: 0,
       explain: "Knowing $B$ doesn't change $P(A)$ — the definition of independence." },
@@ -367,7 +367,7 @@ print("log P (stable)   =", round(float(np.log(p["the"])+np.log(p["cat|the"])+np
   assumptions.</p>
   <p>The same idea, relaxed, defines modern sequence models. A Markov assumption — $x_t$ depends only on a fixed window —
   is conditional independence of $x_t$ from the distant past given the recent past. A transformer drops that window
-  (every token can attend to every previous one), keeping the exact chain-rule factorization $\prod_t P(x_t\mid x_{<t})$
+  (every token can attend to every previous one), keeping the exact chain-rule factorization $\prod_t P(x_t\mid x_{&lt;t})$
   with <em>no</em> independence assumption, which is precisely why it models long-range dependencies that Markov models
   miss — at the $O(n^2)$ cost of Lesson 1.4. So 'what do we assume is independent?' is not a footnote; it's the dial
   that trades parameters and compute against modeling power across the whole field.</p>`
@@ -642,8 +642,8 @@ print("but Y is fully determined by X -> dependent!")
       solution: "Let $X$ be symmetric about 0 and $Y=X^2$. $E[X]=0$ and $E[XY]=E[X^3]=0$, so $\\operatorname{Cov}(X,Y)=0$ — uncorrelated. Yet $Y$ is fully determined by $X$. Covariance measures only <em>linear</em> co-movement, so it's blind to the nonlinear (parabolic) dependence." },
     { level: "hard", prompt: "Two dice; let $S$ be the sum. Use linearity to find $E[S]$ and explain why enumerating 36 outcomes is unnecessary.",
       solution: "$S=X_1+X_2$ with $E[X_i]=3.5$. Linearity gives $E[S]=3.5+3.5=7$ regardless of dependence between the dice — expectation of a sum is the sum of expectations, no joint distribution needed." },
-    { level: "hard", prompt: "AI task: a language model factorizes $P(x_1,\\dots,x_n)=\\prod_t P(x_t\\mid x_{<t})$. Explain why this is exact (not an approximation) and what a Markov model assumes instead.",
-      solution: "The chain rule of probability holds for <em>any</em> joint distribution — repeatedly applying $P(A\\cap B)=P(A\\mid B)P(B)$ gives the product of conditionals with no assumptions, so a transformer that conditions each token on the full history models the joint exactly. A Markov model adds a conditional-independence assumption: $P(x_t\\mid x_{<t})=P(x_t\\mid x_{t-k:t-1})$ (only the last $k$ tokens matter), which is an approximation that discards long-range dependence in exchange for far fewer parameters and $O(n)$ instead of $O(n^2)$ cost." }
+    { level: "hard", prompt: "AI task: a language model factorizes $P(x_1,\\dots,x_n)=\\prod_t P(x_t\\mid x_{&lt;t})$. Explain why this is exact (not an approximation) and what a Markov model assumes instead.",
+      solution: "The chain rule of probability holds for <em>any</em> joint distribution — repeatedly applying $P(A\\cap B)=P(A\\mid B)P(B)$ gives the product of conditionals with no assumptions, so a transformer that conditions each token on the full history models the joint exactly. A Markov model adds a conditional-independence assumption: $P(x_t\\mid x_{&lt;t})=P(x_t\\mid x_{t-k:t-1})$ (only the last $k$ tokens matter), which is an approximation that discards long-range dependence in exchange for far fewer parameters and $O(n)$ instead of $O(n^2)$ cost." }
   ],
 
   rubric: String.raw`<p>Count problems solved correctly before checking.</p>

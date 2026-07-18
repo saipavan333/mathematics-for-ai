@@ -7,7 +7,7 @@ window.WIDGETS = {};
     blue:"#2a6f97", green:"#3a7d44", indigo:"#4f46e5", amber:"#b9722a", red:"#c0392b",
     accent:"#4f46e5", plate:"#f8fafc",
     blueF:"#dbe8fb", greenF:"#e3efe5", redF:"#f7e0dc", amberF:"#f7e7d2",
-    indigoF:"#e5e7ff", neutralF:"#eef2f7" };
+    indigoF:"#e5e7ff", neutralF:"#eef2f7", violet:"#7c4dff" };
 
   function elt(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
   function card(mount) { var w = elt("div", "widget"); mount.appendChild(w); return w; }
@@ -415,6 +415,267 @@ window.WIDGETS = {};
       if (p < 1.5) P.txt(400,324,"corners on the axes → sparsity",PAL.green,12,"left","600");
     }
     slider(controls,{label:"p",min:1,max:24,val:p,step:.1,fmt:function(x){return x>=20?"∞":x.toFixed(1);},on:function(x){p=x;draw();}});
+    draw();
+  });
+
+
+  /* 1.1 — exp and log are mirrors across y = x */
+  reg("1.1", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var b=2, x0=1.4;
+    function draw(){
+      var P=plot(C.ctx,600,340,-2.6,4.4,-2.6,4.4,{l:160,r:160,t:26,b:34});
+      P.clear(); P.grid([-2,-1,0,1,2,3,4],[-2,-1,0,1,2,3,4]); P.axes();
+      P.title("Reflect a point of bˣ across y = x and you land on log");
+      P.line(-2.6,-2.6,4.4,4.4,PAL.axis,1.3,[5,4]);
+      P.fn(function(x){return Math.pow(b,x);},-2.6,4.4,PAL.indigo,2.5);
+      P.fn(function(x){return x>0?Math.log(x)/Math.log(b):NaN;},0.02,4.4,PAL.green,2.5);
+      var y0=Math.pow(b,x0);
+      P.line(x0,y0,y0,x0,PAL.amber,1.4,[3,3]);
+      P.dot(x0,y0,PAL.indigo,4.5); P.dot(y0,x0,PAL.green,4.5);
+      P.txt(16,324,"b = "+b.toFixed(1)+"    "+b.toFixed(1)+"^"+x0.toFixed(1)+" = "+y0.toFixed(2),PAL.indigo,13,"left","600");
+      P.txt(330,324,"log_"+b.toFixed(1)+"("+y0.toFixed(2)+") = "+x0.toFixed(1),PAL.green,13,"left","600");
+    }
+    slider(controls,{label:"base b",min:1.5,max:4,val:b,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){b=v;draw();}});
+    slider(controls,{label:"x",min:-1.5,max:2,val:x0,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){x0=v;draw();}});
+    draw();
+  });
+
+  /* 1.4 — how fast each complexity class explodes */
+  reg("1.4", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var n=64;
+    function draw(){
+      var ctx=C.ctx, P=plot(C.ctx,600,340,0,1,0,1); P.clear();
+      P.title("Slide n — see how many operations each class actually costs");
+      var rows=[["O(1)",1,PAL.green],["O(log n)",Math.log2(n),PAL.blue],["O(n)",n,PAL.amber],
+                ["O(n log n)",n*Math.log2(n),PAL.violet||PAL.indigo],["O(n²)",n*n,PAL.red]];
+      var mx=rows[4][1], x0=132, y0=52, W=396, bh=30, gap=14;
+      for (var i=0;i<rows.length;i++){
+        var y=y0+i*(bh+gap), w=Math.max(2, Math.log10(1+rows[i][1])/Math.log10(1+mx)*W);
+        ctx.fillStyle=rows[i][2]; ctx.globalAlpha=.85; ctx.fillRect(x0,y,w,bh); ctx.globalAlpha=1;
+        P.txt(x0-10,y+bh/2+1,rows[i][0],rows[i][2],12.5,"right","700");
+        var v=rows[i][1];
+        P.txt(x0+w+10,y+bh/2+1, v>=1000? Math.round(v).toLocaleString() : v.toFixed(v<10?1:0), PAL.ink2,12.5,"left","600");
+      }
+      P.txt(16,324,"n = "+n,PAL.ink,13,"left","700");
+      P.txt(120,324,"n² is "+Math.round(n*n/n)+"× the work of n — that gap is why attention is expensive",PAL.ink3,12,"left");
+    }
+    slider(controls,{label:"n",min:2,max:512,val:n,step:1,fmt:function(v){return ""+v;},on:function(v){n=v;draw();}});
+    draw();
+  });
+
+  /* 3.4 — least squares as projection (drag b) */
+  reg("3.4", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,360), controls=controlsIn(wrap);
+    var a=[3,1], b=[1,2.5], cfg={xmin:-0.5,xmax:4.6,ymin:-0.5,ymax:3.6}, P;
+    function draw(){
+      P=plot(C.ctx,600,360,cfg.xmin,cfg.xmax,cfg.ymin,cfg.ymax);
+      P.clear(); P.grid([0,1,2,3,4],[0,1,2,3]); P.axes();
+      P.title("Drag b — the projection is the closest point, error always ⊥");
+      P.line(0,0,4.5,4.5/3,PAL.blue,2);
+      var t=(a[0]*b[0]+a[1]*b[1])/(a[0]*a[0]+a[1]*a[1]), p=[t*a[0],t*a[1]];
+      P.line(b[0],b[1],p[0],p[1],PAL.amber,1.8,[4,3]);
+      P.arrow(0,0,b[0],b[1],PAL.green,2.5);
+      P.dot(p[0],p[1],PAL.indigo,5);
+      var err=Math.hypot(b[0]-p[0],b[1]-p[1]);
+      var dp=(b[0]-p[0])*a[0]+(b[1]-p[1])*a[1];
+      P.txt(16,344,"‖error‖ = "+err.toFixed(3),PAL.amber,13,"left","600");
+      P.txt(200,344,"error · a = "+dp.toFixed(3)+"  → perpendicular",PAL.green,13,"left","600");
+    }
+    draw();
+    function fm(e){var r=C.cv.getBoundingClientRect();
+      b=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX(e.clientX-r.left))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY(e.clientY-r.top)))];draw();}
+    var dg=false;
+    C.cv.addEventListener("mousedown",function(e){dg=true;fm(e);});
+    C.cv.addEventListener("mousemove",function(e){if(dg)fm(e);});
+    window.addEventListener("mouseup",function(){dg=false;});
+    slider(controls,{label:"b.x",min:-0.5,max:4.5,val:b[0],step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){b[0]=v;draw();}});
+    slider(controls,{label:"b.y",min:-0.5,max:3.5,val:b[1],step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){b[1]=v;draw();}});
+  });
+
+  /* 5.4 — SVD: circle in, ellipse out */
+  reg("5.4", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var a=1.4,bb=0.7,c=0.2,d=1.1;
+    function svd2(A){ var a1=A[0][0],b1=A[0][1],c1=A[1][0],d1=A[1][1];
+      var E=(a1+d1)/2,F=(a1-d1)/2,G=(c1+b1)/2,H=(c1-b1)/2;
+      var Q=Math.hypot(E,H),R=Math.hypot(F,G);
+      return {s1:Q+R, s2:Math.abs(Q-R), phi:(Math.atan2(H,E)+Math.atan2(G,F))/2}; }
+    function draw(){
+      var P=plot(C.ctx,600,340,-2.6,2.6,-2.6,2.6,{l:160,r:160,t:26,b:34});
+      P.clear(); P.grid([-2,-1,0,1,2],[-2,-1,0,1,2]); P.axes();
+      P.title("A stretches the unit circle into an ellipse — σ₁,σ₂ are the half-axes");
+      var circ=[],ell=[];
+      for(var i=0;i<=140;i++){var t=i/140*2*Math.PI,cx=Math.cos(t),cy=Math.sin(t);
+        circ.push([cx,cy]); ell.push([a*cx+bb*cy, c*cx+d*cy]);}
+      P.poly(circ,PAL.ink3,1.5,[4,3]); P.poly(ell,PAL.indigo,2.5);
+      var S=svd2([[a,bb],[c,d]]);
+      var u1=[Math.cos(S.phi),Math.sin(S.phi)], u2=[-u1[1],u1[0]];
+      P.arrow(0,0,u1[0]*S.s1,u1[1]*S.s1,PAL.red,2.4);
+      P.arrow(0,0,u2[0]*S.s2,u2[1]*S.s2,PAL.green,2.2);
+      P.txt(16,324,"σ₁ = "+S.s1.toFixed(2)+"   σ₂ = "+S.s2.toFixed(2),PAL.ink2,13,"left","600");
+      P.txt(300,324,"condition σ₁/σ₂ = "+(S.s2>1e-6?(S.s1/S.s2).toFixed(1):"∞ (singular)"),
+            (S.s2>1e-6&&S.s1/S.s2<8)?PAL.green:PAL.red,13,"left","600");
+    }
+    slider(controls,{label:"a",min:-2,max:2,val:a,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){a=v;draw();}});
+    slider(controls,{label:"b",min:-2,max:2,val:bb,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){bb=v;draw();}});
+    slider(controls,{label:"c",min:-2,max:2,val:c,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){c=v;draw();}});
+    slider(controls,{label:"d",min:-2,max:2,val:d,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){d=v;draw();}});
+    draw();
+  });
+
+  /* 6.5 — Taylor: add terms, watch the fit widen */
+  reg("6.5", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var A=0.9, K=2;
+    function taylor(x){ var s=0, dv=[Math.cos(A),-Math.sin(A),-Math.cos(A),Math.sin(A)], f=1;
+      for(var j=0;j<=K;j++){ if(j>0) f*=j; s+= dv[j%4]/f*Math.pow(x-A,j); } return s; }
+    function draw(){
+      var P=plot(C.ctx,600,340,-0.4,6.6,-2.0,2.0);
+      P.clear(); P.grid([0,1,2,3,4,5,6],[-1,0,1]); P.axes();
+      P.title("Add Taylor terms — the fit hugs cos further from the point a");
+      P.fn(Math.cos,-0.4,6.6,PAL.indigo,2.5);
+      P.fn(taylor,-0.4,6.6,PAL.red,2.2);
+      P.dot(A,Math.cos(A),PAL.ink,5);
+      var e=0,n=0; for(var x=A-1.6;x<=A+1.6;x+=0.05){e+=Math.abs(taylor(x)-Math.cos(x));n++;}
+      P.txt(16,324,"a = "+A.toFixed(1)+"    order = "+K,PAL.ink2,13,"left","600");
+      P.txt(260,324,"avg |error| near a = "+(e/n).toFixed(4),PAL.red,13,"left","600");
+    }
+    slider(controls,{label:"point a",min:0,max:6,val:A,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){A=v;draw();}});
+    slider(controls,{label:"order",min:0,max:8,val:K,step:1,fmt:function(v){return ""+v;},on:function(v){K=v;draw();}});
+    draw();
+  });
+
+  /* 10.3 — the Beta distribution's shape */
+  reg("10.3", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var A=2,B=5;
+    function lgamma(z){ var g=[676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+      if(z<0.5) return Math.log(Math.PI/Math.sin(Math.PI*z))-lgamma(1-z);
+      z-=1; var x=0.99999999999980993; for(var i=0;i<8;i++) x+=g[i]/(z+i+1);
+      var t=z+7.5; return 0.5*Math.log(2*Math.PI)+(z+0.5)*Math.log(t)-t+Math.log(x); }
+    function bpdf(x){ if(x<=0||x>=1) return 0;
+      return Math.exp((A-1)*Math.log(x)+(B-1)*Math.log(1-x)+lgamma(A+B)-lgamma(A)-lgamma(B)); }
+    function draw(){
+      var P=plot(C.ctx,600,340,-0.02,1.02,-0.1,4.2);
+      P.clear(); P.grid([0,0.25,0.5,0.75,1],[0,1,2,3,4]); P.axes(); 
+      P.title("Beta(a,b) — two counts bend the curve to any belief on [0,1]");
+      P.fn(function(x){return Math.min(bpdf(x),4.15);},0.001,0.999,PAL.indigo,2.6);
+      var mean=A/(A+B), mode=(A>1&&B>1)?(A-1)/(A+B-2):NaN;
+      P.line(mean,0,mean,Math.min(bpdf(mean),4.1),PAL.red,1.4,[4,3]);
+      P.txt(16,324,"a = "+A.toFixed(1)+"   b = "+B.toFixed(1),PAL.ink2,13,"left","600");
+      P.txt(220,324,"mean = "+mean.toFixed(3),PAL.red,13,"left","600");
+      P.txt(400,324, isNaN(mode)?"":"peak = "+mode.toFixed(3),PAL.indigo,13,"left","600");
+    }
+    slider(controls,{label:"a",min:0.5,max:8,val:A,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){A=v;draw();}});
+    slider(controls,{label:"b",min:0.5,max:8,val:B,step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){B=v;draw();}});
+    draw();
+  });
+
+  /* 11.2 — likelihood peaks at the observed frequency */
+  reg("11.2", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var n=10,k=7;
+    function draw(){
+      var P=plot(C.ctx,600,340,-0.02,1.02,-0.06,1.15);
+      P.clear(); P.grid([0,0.25,0.5,0.75,1],[0,0.5,1]); P.axes();
+      P.title("Likelihood of the data for each θ — the peak is the MLE");
+      var L=function(t){ return Math.pow(t,k)*Math.pow(1-t,n-k); };
+      var mx=0; for(var x=0.001;x<1;x+=0.001) mx=Math.max(mx,L(x));
+      P.fn(function(t){return L(t)/(mx||1);},0.001,0.999,PAL.indigo,2.6);
+      var th=k/n;
+      P.line(th,0,th,1,PAL.red,1.6,[4,3]); P.dot(th,1,PAL.red,5);
+      P.txt(16,324,k+" heads in "+n+" flips",PAL.ink2,13,"left","600");
+      P.txt(240,324,"θ̂ = "+k+"/"+n+" = "+th.toFixed(2),PAL.red,13,"left","700");
+      P.txt(430,324,"= the observed frequency",PAL.ink3,12,"left");
+    }
+    slider(controls,{label:"flips n",min:1,max:40,val:n,step:1,fmt:function(v){return ""+v;},on:function(v){n=v;if(k>n)k=n;draw();}});
+    slider(controls,{label:"heads k",min:0,max:40,val:k,step:1,fmt:function(v){return ""+v;},on:function(v){k=Math.min(v,n);draw();}});
+    draw();
+  });
+
+  /* 11.4 — the bias-variance U */
+  reg("11.4", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var cx=2.3;
+    var bias2=function(c){return 5.5/(c+0.7);}, vari=function(c){return 0.22*Math.pow(c,1.6);};
+    var tot=function(c){return bias2(c)+vari(c);};
+    function draw(){
+      var P=plot(C.ctx,600,340,-0.1,5.1,-0.2,5.4);
+      P.clear(); P.grid([0,1,2,3,4,5],[0,1,2,3,4,5]); P.axes();
+      P.title("Slide model complexity — total error is a U, not a slope");
+      P.fn(function(c){return Math.min(bias2(c),5.3);},0.25,5,PAL.blue,2.2);
+      P.fn(function(c){return Math.min(vari(c),5.3);},0.25,5,PAL.green,2.2);
+      P.fn(function(c){return Math.min(tot(c),5.3);},0.25,5,PAL.red,2.8);
+      var best=0.3,bv=1e9; for(var c=0.3;c<=4.9;c+=0.01) if(tot(c)<bv){bv=tot(c);best=c;}
+      P.line(best,0,best,tot(best),PAL.ink3,1,[3,3]);
+      P.line(cx,0,cx,Math.min(tot(cx),5.3),PAL.ink,1.4);
+      P.dot(cx,Math.min(tot(cx),5.3),PAL.red,5);
+      P.txt(16,324,"bias² = "+bias2(cx).toFixed(2)+"   variance = "+vari(cx).toFixed(2),PAL.ink2,13,"left","600");
+      P.txt(330,324,"total = "+tot(cx).toFixed(2)+(Math.abs(cx-best)<0.25?"  ← sweet spot":""),
+            Math.abs(cx-best)<0.25?PAL.green:PAL.red,13,"left","700");
+    }
+    slider(controls,{label:"complexity",min:0.3,max:5,val:cx,step:.05,fmt:function(v){return v.toFixed(2);},on:function(v){cx=v;draw();}});
+    draw();
+  });
+
+  /* 12.2 — KL shrinks to zero as the model matches the truth */
+  reg("12.2", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var t=0;
+    var p=[0.5,0.3,0.15,0.05];
+    function draw(){
+      var ctx=C.ctx, P=plot(C.ctx,600,340,0,1,0,1); P.clear();
+      P.title("Slide the model toward the truth — watch KL fall to zero");
+      var q=[],u=0.25,i;
+      for(i=0;i<4;i++) q.push((1-t)*u + t*p[i]);
+      var H=0,CE=0; for(i=0;i<4;i++){ H-=p[i]*Math.log2(p[i]); CE-=p[i]*Math.log2(q[i]); }
+      var KL=CE-H;
+      var x0=70,y0=56,W=340,H0=190;
+      for(i=0;i<4;i++){
+        var bw=W/4-18, bx=x0+i*(W/4);
+        ctx.fillStyle=PAL.blueF; ctx.fillRect(bx,y0+H0-p[i]*H0,bw*0.46,p[i]*H0);
+        ctx.strokeStyle=PAL.blue; ctx.lineWidth=1; ctx.strokeRect(bx,y0+H0-p[i]*H0,bw*0.46,p[i]*H0);
+        ctx.fillStyle=PAL.amberF; ctx.fillRect(bx+bw*0.52,y0+H0-q[i]*H0,bw*0.46,q[i]*H0);
+        ctx.strokeStyle=PAL.amber; ctx.strokeRect(bx+bw*0.52,y0+H0-q[i]*H0,bw*0.46,q[i]*H0);
+        P.txt(bx+bw*0.5,y0+H0+16,"class "+i,PAL.ink3,10.5,"center");
+      }
+      ctx.strokeStyle=PAL.axis; ctx.beginPath(); ctx.moveTo(x0-8,y0+H0); ctx.lineTo(x0+W,y0+H0); ctx.stroke();
+      var tx=x0+W+34;
+      P.txt(tx,y0+16,"true p",PAL.blue,12,"left","700");
+      P.txt(tx,y0+36,"model q",PAL.amber,12,"left","700");
+      P.txt(tx,y0+72,"H(p)  = "+H.toFixed(3),PAL.ink2,12,"left");
+      P.txt(tx,y0+94,"H(p,q) = "+CE.toFixed(3),PAL.ink2,12,"left");
+      P.txt(tx,y0+126,"KL(p‖q)",PAL.ink,12.5,"left","700");
+      P.txt(tx,y0+150,KL.toFixed(3)+" bits",KL<0.02?PAL.green:PAL.red,17,"left","700");
+    }
+    slider(controls,{label:"model → truth",min:0,max:1,val:t,step:.02,fmt:function(v){return (v*100).toFixed(0)+"%";},on:function(v){t=v;draw();}});
+    draw();
+  });
+
+  /* 13.5 — finite differences: too big truncates, too small round-offs */
+  reg("13.5", function (mount) {
+    var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
+    var e=-6;
+    var f=function(x){return Math.sin(x)+0.3*x*x;}, fp=function(x){return Math.cos(x)+0.6*x;};
+    function err(h){ var x=1.2; return Math.abs((f(x+h)-f(x-h))/(2*h) - fp(x)); }
+    function draw(){
+      var P=plot(C.ctx,600,340,-12,0.5,-12,1);
+      P.clear(); P.grid([-12,-9,-6,-3,0],[-12,-9,-6,-3,0]); P.axes(); 
+      P.title("Step size h: too big = truncation, too small = round-off");
+      var pts=[]; for(var k=-12;k<=0;k+=0.1){ var E=err(Math.pow(10,k)); pts.push([k, Math.log10(Math.max(E,1e-13))]); }
+      P.poly(pts,PAL.indigo,2.5);
+      var h=Math.pow(10,e), E=err(h);
+      P.dot(e,Math.log10(Math.max(E,1e-13)),PAL.red,5);
+      P.line(e,-12,e,Math.log10(Math.max(E,1e-13)),PAL.red,1.2,[3,3]);
+      P.txt(16,324,"h = 1e"+e.toFixed(0)+"    error = "+E.toExponential(2),PAL.ink2,13,"left","600");
+      P.txt(330,324, (e>-3?"h too large — truncation":(e<-9?"h too small — round-off noise":"good zone ✓")),
+            (e<=-3&&e>=-9)?PAL.green:PAL.red,13,"left","700");
+      P.txt(16,58,"log₁₀ error",PAL.ink3,11,"left");
+      P.txt(520,300,"log₁₀ h",PAL.ink3,11,"left");
+    }
+    slider(controls,{label:"log₁₀ h",min:-12,max:0,val:e,step:.5,fmt:function(v){return "1e"+v.toFixed(0);},on:function(v){e=v;draw();}});
     draw();
   });
 

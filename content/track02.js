@@ -317,7 +317,7 @@ print(np.round(scores, 2))
   anywhere in the plane — the seed of "basis" in Track 3.</p>
   <hr class="soft">
   <p><strong>Why this matters for training.</strong> A gradient-descent trajectory $\mathbf w_{t+1}=\mathbf w_t-\eta\,\mathbf g_t$
-  is a running linear combination of gradients: unrolling gives $\mathbf w_T=\mathbf w_0-\eta\sum_{t<T}\mathbf g_t$. The
+  is a running linear combination of gradients: unrolling gives $\mathbf w_T=\mathbf w_0-\eta\sum_{t&lt;T}\mathbf g_t$. The
   weights are all $\eta$ here; <strong>momentum</strong> (Track 8) simply uses a smarter weighted combination of past
   gradients. Optimizers are recipes for choosing the coefficients in a linear combination.</p>`,
 
