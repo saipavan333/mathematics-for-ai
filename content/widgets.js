@@ -1057,13 +1057,14 @@ window.WIDGETS = {};
   /* 8.4 — momentum vs plain gradient descent */
   reg("8.4", function (mount) {
     var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
-    var eta=0.14, beta=0.85, b=9;
+    var eta=0.16, beta=0.55, b=5;
     function run(useM){ var x=[4.6,1.4], v=[0,0], path=[[x[0],x[1]]];
-      for (var i=0;i<40;i++){ var g=[x[0], b*x[1]];
+      for (var i=0;i<32;i++){ var g=[x[0], b*x[1]];
         if (useM){ v=[beta*v[0]-eta*g[0], beta*v[1]-eta*g[1]]; x=[x[0]+v[0], x[1]+v[1]]; }
         else x=[x[0]-eta*g[0], x[1]-eta*g[1]];
         if (!isFinite(x[0])||Math.abs(x[0])>9||Math.abs(x[1])>4) break;
-        path.push([x[0],x[1]]); }
+        path.push([x[0],x[1]]);
+        if (Math.hypot(x[0],x[1])<0.28) break; }
       return path; }
     function draw(){
       var P=plot(C.ctx,600,340,-5.2,5.2,-2.6,2.6);
@@ -1075,7 +1076,7 @@ window.WIDGETS = {};
         P.poly(pts,[PAL.indigo,PAL.blue,PAL.blueF][i],1.6); });
       [[run(false),PAL.red],[run(true),PAL.green]].forEach(function(pr){
         P.poly(pr[0],pr[1],1.8);
-        pr[0].forEach(function(p){ P.dot(p[0],p[1],pr[1],2.0); }); });
+        pr[0].forEach(function(p,ii){ if(ii%2===0) P.dot(p[0],p[1],pr[1],2.0); }); });
       P.txt(16,324,"— plain GD",PAL.red,12.5,"left","700");
       P.txt(130,324,"— momentum (β = "+beta.toFixed(2)+")",PAL.green,12.5,"left","700");
       P.txt(370,324,"η = "+eta.toFixed(2)+(eta*b>2?"  diverging!":""),eta*b>2?PAL.red:PAL.ink2,12.5,"left","600");
@@ -1585,18 +1586,18 @@ window.WIDGETS = {};
     var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
     var k=0.6;
     function draw(){
-      var P=plot(C.ctx,600,340,-3.4,3.4,-3.4,3.4,{l:160,r:160,t:26,b:34});
-      P.clear(); P.grid([-3,-2,-1,0,1,2,3],[-3,-2,-1,0,1,2,3]); P.axes();
+      var P=plot(C.ctx,600,340,-2.7,2.7,-2.7,2.7,{l:160,r:160,t:26,b:34});
+      P.clear(); P.grid([-2,-1,0,1,2],[-2,-1,0,1,2]); P.axes();
       var c1=[1,2], c2=[k*1, k*2 + (1-k)*(-1)];   // k=1 → collinear with c1
       var det=c1[0]*c2[1]-c1[1]*c2[0], full=Math.abs(det)>0.08;
       P.title(full ? "rank 2 — the columns reach the whole plane"
                    : "rank 1 — outputs collapse onto a single line");
       if(!full){ var L=Math.hypot(c1[0],c1[1]);
-        P.poly([[-3.2*c1[0]/L,-3.2*c1[1]/L],[3.2*c1[0]/L,3.2*c1[1]/L]],PAL.blue,2.2);
+        P.poly([[-2.6*c1[0]/L,-2.6*c1[1]/L],[2.6*c1[0]/L,2.6*c1[1]/L]],PAL.blue,2.2);
         var n=[c1[1],-c1[0]], nl=Math.hypot(n[0],n[1]);
-        P.poly([[-3.2*n[0]/nl,-3.2*n[1]/nl],[3.2*n[0]/nl,3.2*n[1]/nl]],PAL.green,2,[5,4]);
-        P.txt(P.X(2.4*n[0]/nl),P.Y(2.4*n[1]/nl),"null space",PAL.green,11.5,"center","700");
-      } else P.fill([[-3.3,-3.3],[3.3,-3.3],[3.3,3.3],[-3.3,3.3]],"rgba(42,111,151,0.07)");
+        P.poly([[-2.6*n[0]/nl,-2.6*n[1]/nl],[2.6*n[0]/nl,2.6*n[1]/nl]],PAL.green,2,[5,4]);
+        P.txt(P.X(2.0*n[0]/nl),P.Y(2.0*n[1]/nl),"null space",PAL.green,11.5,"center","700");
+      } else P.fill([[-2.6,-2.6],[2.6,-2.6],[2.6,2.6],[-2.6,2.6]],"rgba(42,111,151,0.07)");
       P.arrow(0,0,c1[0],c1[1],PAL.blue,2.6);
       P.arrow(0,0,c2[0],c2[1],PAL.indigo,2.6);
       P.txt(16,324,"det = "+det.toFixed(3)+"    rank = "+(full?2:1),PAL.ink2,13,"left","600");
@@ -2370,16 +2371,17 @@ window.WIDGETS = {};
   /* C.2 — three optimizers on one valley */
   reg("C.2", function (mount) {
     var wrap=card(mount), C=canvasIn(wrap,600,340), controls=controlsIn(wrap);
-    var eta=0.12, b=9;
+    var eta=0.16, b=5;
     function run(kind){ var x=[4.6,1.5], v=[0,0], m=[0,0], s=[0,0], path=[[x[0],x[1]]];
-      for (var i=1;i<=44;i++){ var g=[x[0], b*x[1]];
+      for (var i=1;i<=28;i++){ var g=[x[0], b*x[1]];
         if (kind===0) x=[x[0]-eta*g[0], x[1]-eta*g[1]];
-        else if (kind===1){ v=[0.85*v[0]-eta*g[0], 0.85*v[1]-eta*g[1]]; x=[x[0]+v[0],x[1]+v[1]]; }
+        else if (kind===1){ v=[0.6*v[0]-eta*g[0], 0.6*v[1]-eta*g[1]]; x=[x[0]+v[0],x[1]+v[1]]; }
         else { for(var d=0;d<2;d++){ m[d]=0.9*m[d]+0.1*g[d]; s[d]=0.999*s[d]+0.001*g[d]*g[d];
               var mh=m[d]/(1-Math.pow(0.9,i)), sh=s[d]/(1-Math.pow(0.999,i));
               x[d]-= (eta*2.2)*mh/(Math.sqrt(sh)+1e-8); } }
         if(!isFinite(x[0])||Math.abs(x[0])>9||Math.abs(x[1])>4) break;
-        path.push([x[0],x[1]]); }
+        path.push([x[0],x[1]]);
+        if (Math.hypot(x[0],x[1])<0.28) break; }
       return path; }
     function draw(){
       var P=plot(C.ctx,600,340,-5.2,5.2,-2.6,2.6);
