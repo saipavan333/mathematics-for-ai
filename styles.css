@@ -602,3 +602,52 @@ body .phase-n{ background:var(--bg-card); color:var(--ink-soft); border:1px soli
 #content[data-track]{ background:var(--bg-card); border:1px solid var(--line); border-radius:20px;
   padding:24px 34px 30px; box-shadow:var(--shadow-sm); }
 @media (max-width:880px){ #content[data-track]{ padding:18px 18px 22px; border-radius:16px; } }
+
+/* ============================================================
+   MOBILE POLISH — comfortable on phones/tablets
+   ============================================================ */
+@media (max-width:880px){
+  body{ overflow-x:hidden; }                       /* never sideways-scroll from the fixed backdrop */
+  .topbar .crumbs{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:50vw; }
+  .hdr-bar{ display:none; }                         /* keep the streak; drop the tiny progress bar */
+  .widget{ max-width:100%; }
+  .widget-row input[type=range]{ width:130px; height:24px; }   /* easier to grab with a thumb */
+  .dash-stats{ gap:10px; }
+}
+@media (max-width:520px){
+  .lesson-h h2{ font-size:24px; }
+  .dash-hero h2{ font-size:22px; }
+  .content-wrap{ padding:16px 12px 64px; }
+  .widget-controls{ gap:8px 12px; }
+  .sidenav{ gap:6px; }
+}
+
+/* ============================================================
+   FIRST-RUN WELCOME / HOW-TO overlay
+   ============================================================ */
+.welcome-overlay{ position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center;
+  padding:24px; background:rgba(10,14,22,.55); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  opacity:0; transition:opacity .28s ease; }
+.welcome-overlay.show{ opacity:1; }
+.welcome-overlay.closing{ opacity:0; }
+.welcome-card{ max-width:560px; width:100%; max-height:90vh; overflow-y:auto; background:var(--bg-card);
+  border:1px solid var(--line); border-radius:22px; padding:34px 36px; position:relative;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.55);
+  transform:translateY(14px) scale(.98); transition:transform .3s cubic-bezier(.2,.7,.2,1); }
+.welcome-overlay.show .welcome-card{ transform:none; }
+.welcome-mark{ width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#6366f1,#a855f7 55%,#ec4899); color:#fff; font-family:Georgia,serif;
+  font-weight:800; font-size:26px; box-shadow:0 8px 20px -6px #7c3aed; }
+.welcome-eyebrow{ margin-top:16px; font-family:-apple-system,sans-serif; font-size:12px; font-weight:800;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--accent); }
+.welcome-card h2{ font-size:26px; line-height:1.2; margin:8px 0 12px; letter-spacing:-.01em; color:var(--ink); }
+.welcome-lead{ color:var(--ink-soft); font-size:16px; line-height:1.55; margin:0 0 20px; }
+.welcome-steps{ display:flex; flex-direction:column; gap:12px; margin-bottom:24px; }
+.wstep{ display:flex; gap:13px; align-items:flex-start; font-size:15.5px; color:var(--ink); line-height:1.5; }
+.wnum{ flex:0 0 28px; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:-apple-system,sans-serif; font-weight:800; font-size:14px; color:#fff;
+  background:linear-gradient(135deg,var(--accent),#8b5cf6); box-shadow:0 4px 12px -4px var(--accent); }
+.welcome-actions{ display:flex; flex-wrap:wrap; gap:12px; }
+.welcome-actions .dash-btn{ font-size:15px; }
+.welcome-foot{ margin-top:18px; font-size:13px; color:var(--ink-faint); font-style:italic; }
+@media (max-width:520px){ .welcome-card{ padding:26px 22px; } .welcome-card h2{ font-size:22px; } .welcome-lead{ font-size:15px; } }

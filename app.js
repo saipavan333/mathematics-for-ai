@@ -866,8 +866,48 @@ _json.dumps(__imgs)`;
 
   window.addEventListener("hashchange", go);
 
+  /* ---- first-run welcome / how-to (reopen with the "? Guide" button) ---- */
+  function showWelcome() {
+    if (document.querySelector(".welcome-overlay")) return;
+    const last = LS.get("last", null);
+    const firstId = (realLessons(CURRICULUM[0])[0] || {}).id || "1.1";
+    const useLast = last && CONTENT[last];
+    const startId = useLast ? last : firstId;
+    const startLabel = useLast ? ("Continue &middot; " + last) : ("Start with " + firstId);
+    const ov = el("div", "welcome-overlay");
+    ov.innerHTML =
+      `<div class="welcome-card">
+         <div class="welcome-mark">&#8721;</div>
+         <div class="welcome-eyebrow">Welcome</div>
+         <h2>You're going to be excellent at the math behind AI.</h2>
+         <p class="welcome-lead">This course takes you from first principles all the way to transformers &mdash; in plain English, every step shown. Here's the rhythm that makes it stick:</p>
+         <div class="welcome-steps">
+           <div class="wstep"><div class="wnum">1</div><div><b>Read</b> each lesson top to bottom &mdash; plain English first, then the math, then the derivation.</div></div>
+           <div class="wstep"><div class="wnum">2</div><div><b>Play.</b> Drag the interactive demo and press &#9656; Run on the code. Watching it move is where it clicks.</div></div>
+           <div class="wstep"><div class="wnum">3</div><div><b>Check yourself</b> on the quiz, and try a practice problem before opening the solution.</div></div>
+           <div class="wstep"><div class="wnum">4</div><div><b>Come back daily.</b> A few minutes in the Review tab locks each idea into long-term memory.</div></div>
+         </div>
+         <div class="welcome-actions">
+           <a class="dash-btn primary" id="welcomeStart" href="#${startId}">${startLabel} &nbsp;&rarr;</a>
+           <button class="dash-btn" id="welcomeClose" type="button">I'll explore on my own</button>
+         </div>
+         <div class="welcome-foot">Take your time &mdash; understanding beats speed. Reopen this anytime with &ldquo;? Guide&rdquo; up top.</div>
+       </div>`;
+    document.body.appendChild(ov);
+    function done() { LS.set("onboarded", true); ov.classList.add("closing"); setTimeout(() => ov.remove(), 260); }
+    ov.querySelector("#welcomeStart").addEventListener("click", done);
+    ov.querySelector("#welcomeClose").addEventListener("click", done);
+    ov.addEventListener("click", e => { if (e.target === ov) done(); });
+    requestAnimationFrame(() => ov.classList.add("show"));
+  }
+
   /* ---- boot (wait for DOM + deferred KaTeX to be ready) ---- */
-  function boot() { injectAppBackdrop(); injectChrome(); buildNav(); go(); refreshStats(); }
+  function boot() {
+    injectAppBackdrop(); injectChrome(); buildNav(); go(); refreshStats();
+    const hb = document.getElementById("helpBtn");
+    if (hb) hb.addEventListener("click", showWelcome);
+    if (!LS.get("onboarded", false)) setTimeout(showWelcome, 450);
+  }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
 })();

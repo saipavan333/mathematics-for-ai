@@ -103,12 +103,12 @@ window.WIDGETS = {};
       P.txt(400, 344, Math.abs(dot)<0.35 ? "⊥ perpendicular" : (dot>0?"aligned":"opposed"), PAL.ink3, 12, "left");
     }
     draw();
-    function fromMouse(e) { var r = C.cv.getBoundingClientRect(); var mx = e.clientX-r.left, my = e.clientY-r.top;
+    function fromMouse(e) { var r = C.cv.getBoundingClientRect(), _s = (parseFloat(C.cv.style.width)||600)/r.width; var mx = (e.clientX-r.left)*_s, my = (e.clientY-r.top)*_s;
       b = [Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX(mx))), Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY(my)))]; draw(); }
     var dragging = false;
-    C.cv.addEventListener("mousedown", function(e){ dragging=true; fromMouse(e); });
-    C.cv.addEventListener("mousemove", function(e){ if(dragging) fromMouse(e); });
-    window.addEventListener("mouseup", function(){ dragging=false; });
+    C.cv.addEventListener("pointerdown",function(e){dragging=true;try{C.cv.setPointerCapture(e.pointerId);}catch(_){}fromMouse(e);e.preventDefault();});
+    C.cv.addEventListener("pointermove",function(e){if(dragging){fromMouse(e);e.preventDefault();}});
+    window.addEventListener("pointerup",function(){dragging=false;});
     slider(controls, { label:"b.x", min:-1, max:5, val:b[0], step:0.1, fmt:function(v){return v.toFixed(1);}, on:function(v){ b[0]=v; draw(); } });
     slider(controls, { label:"b.y", min:-1, max:4, val:b[1], step:0.1, fmt:function(v){return v.toFixed(1);}, on:function(v){ b[1]=v; draw(); } });
   });
@@ -211,14 +211,14 @@ window.WIDGETS = {};
       P.txt(370,344,"u + v = ("+s[0].toFixed(1)+", "+s[1].toFixed(1)+")",PAL.indigo,13,"left","700");
     }
     draw();
-    function fromMouse(e){ var r=C.cv.getBoundingClientRect();
-      var sx=Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX(e.clientX-r.left)));
-      var sy=Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY(e.clientY-r.top)));
+    function fromMouse(e){ var r=C.cv.getBoundingClientRect(),_s=(parseFloat(C.cv.style.width)||600)/r.width;
+      var sx=Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX((e.clientX-r.left)*_s)));
+      var sy=Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY((e.clientY-r.top)*_s)));
       v=[sx-u[0], sy-u[1]]; draw(); }
     var dragging=false;
-    C.cv.addEventListener("mousedown",function(e){dragging=true;fromMouse(e);});
-    C.cv.addEventListener("mousemove",function(e){if(dragging)fromMouse(e);});
-    window.addEventListener("mouseup",function(){dragging=false;});
+    C.cv.addEventListener("pointerdown",function(e){dragging=true;try{C.cv.setPointerCapture(e.pointerId);}catch(_){}fromMouse(e);e.preventDefault();});
+    C.cv.addEventListener("pointermove",function(e){if(dragging){fromMouse(e);e.preventDefault();}});
+    window.addEventListener("pointerup",function(){dragging=false;});
     slider(controls,{label:"v.x",min:-2,max:4,val:v[0],step:.1,fmt:function(x){return x.toFixed(1);},on:function(x){v[0]=x;draw();}});
     slider(controls,{label:"v.y",min:-2,max:4,val:v[1],step:.1,fmt:function(x){return x.toFixed(1);},on:function(x){v[1]=x;draw();}});
   });
@@ -484,12 +484,12 @@ window.WIDGETS = {};
       P.txt(200,344,"error · a = "+dp.toFixed(3)+"  → perpendicular",PAL.green,13,"left","600");
     }
     draw();
-    function fm(e){var r=C.cv.getBoundingClientRect();
-      b=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX(e.clientX-r.left))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY(e.clientY-r.top)))];draw();}
+    function fm(e){var r=C.cv.getBoundingClientRect(),_s=(parseFloat(C.cv.style.width)||600)/r.width;
+      b=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX((e.clientX-r.left)*_s))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY((e.clientY-r.top)*_s)))];draw();}
     var dg=false;
-    C.cv.addEventListener("mousedown",function(e){dg=true;fm(e);});
-    C.cv.addEventListener("mousemove",function(e){if(dg)fm(e);});
-    window.addEventListener("mouseup",function(){dg=false;});
+    C.cv.addEventListener("pointerdown",function(e){dg=true;try{C.cv.setPointerCapture(e.pointerId);}catch(_){}fm(e);e.preventDefault();});
+    C.cv.addEventListener("pointermove",function(e){if(dg){fm(e);e.preventDefault();}});
+    window.addEventListener("pointerup",function(){dg=false;});
     slider(controls,{label:"b.x",min:-0.5,max:4.5,val:b[0],step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){b[0]=v;draw();}});
     slider(controls,{label:"b.y",min:-0.5,max:3.5,val:b[1],step:.1,fmt:function(v){return v.toFixed(1);},on:function(v){b[1]=v;draw();}});
   });
@@ -704,12 +704,12 @@ window.WIDGETS = {};
       P.txt(230,344,"‖v‖ = √("+v[0].toFixed(1)+"² + "+v[1].toFixed(1)+"²) = "+L.toFixed(3),PAL.ink2,13,"left","600");
     }
     draw();
-    function fm(e){var r=C.cv.getBoundingClientRect();
-      v=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX(e.clientX-r.left))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY(e.clientY-r.top)))];draw();}
+    function fm(e){var r=C.cv.getBoundingClientRect(),_s=(parseFloat(C.cv.style.width)||600)/r.width;
+      v=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX((e.clientX-r.left)*_s))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY((e.clientY-r.top)*_s)))];draw();}
     var dg=false;
-    C.cv.addEventListener("mousedown",function(e){dg=true;fm(e);});
-    C.cv.addEventListener("mousemove",function(e){if(dg)fm(e);});
-    window.addEventListener("mouseup",function(){dg=false;});
+    C.cv.addEventListener("pointerdown",function(e){dg=true;try{C.cv.setPointerCapture(e.pointerId);}catch(_){}fm(e);e.preventDefault();});
+    C.cv.addEventListener("pointermove",function(e){if(dg){fm(e);e.preventDefault();}});
+    window.addEventListener("pointerup",function(){dg=false;});
     slider(controls,{label:"Δx",min:-0.5,max:4.5,val:v[0],step:.1,fmt:function(x){return x.toFixed(1);},on:function(x){v[0]=x;draw();}});
     slider(controls,{label:"Δy",min:-0.5,max:3.5,val:v[1],step:.1,fmt:function(x){return x.toFixed(1);},on:function(x){v[1]=x;draw();}});
   });
@@ -1344,12 +1344,12 @@ window.WIDGETS = {};
       P.txt(190,344, indep?"basis ✓ — spans the plane":"det ≈ 0 → NOT a basis", indep?PAL.green:PAL.red,13,"left","700");
     }
     draw();
-    function fm(e){var r=C.cv.getBoundingClientRect();
-      v=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX(e.clientX-r.left))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY(e.clientY-r.top)))];draw();}
+    function fm(e){var r=C.cv.getBoundingClientRect(),_s=(parseFloat(C.cv.style.width)||600)/r.width;
+      v=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX((e.clientX-r.left)*_s))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY((e.clientY-r.top)*_s)))];draw();}
     var dg=false;
-    C.cv.addEventListener("mousedown",function(e){dg=true;fm(e);});
-    C.cv.addEventListener("mousemove",function(e){if(dg)fm(e);});
-    window.addEventListener("mouseup",function(){dg=false;});
+    C.cv.addEventListener("pointerdown",function(e){dg=true;try{C.cv.setPointerCapture(e.pointerId);}catch(_){}fm(e);e.preventDefault();});
+    C.cv.addEventListener("pointermove",function(e){if(dg){fm(e);e.preventDefault();}});
+    window.addEventListener("pointerup",function(){dg=false;});
     slider(controls,{label:"v.x",min:-3,max:3,val:v[0],step:.1,fmt:function(x){return x.toFixed(1);},on:function(x){v[0]=x;draw();}});
     slider(controls,{label:"v.y",min:-3,max:3,val:v[1],step:.1,fmt:function(x){return x.toFixed(1);},on:function(x){v[1]=x;draw();}});
   });
@@ -1375,12 +1375,12 @@ window.WIDGETS = {};
       P.txt(250,344,"‖q₁‖ = "+Math.hypot(q1[0],q1[1]).toFixed(3)+"   ‖q₂‖ = "+Math.hypot(q2[0],q2[1]).toFixed(3),PAL.ink2,13,"left","600");
     }
     draw();
-    function fm(e){var r=C.cv.getBoundingClientRect();
-      a2=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX(e.clientX-r.left))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY(e.clientY-r.top)))];draw();}
+    function fm(e){var r=C.cv.getBoundingClientRect(),_s=(parseFloat(C.cv.style.width)||600)/r.width;
+      a2=[Math.max(cfg.xmin,Math.min(cfg.xmax,P.invX((e.clientX-r.left)*_s))),Math.max(cfg.ymin,Math.min(cfg.ymax,P.invY((e.clientY-r.top)*_s)))];draw();}
     var dg=false;
-    C.cv.addEventListener("mousedown",function(e){dg=true;fm(e);});
-    C.cv.addEventListener("mousemove",function(e){if(dg)fm(e);});
-    window.addEventListener("mouseup",function(){dg=false;});
+    C.cv.addEventListener("pointerdown",function(e){dg=true;try{C.cv.setPointerCapture(e.pointerId);}catch(_){}fm(e);e.preventDefault();});
+    C.cv.addEventListener("pointermove",function(e){if(dg){fm(e);e.preventDefault();}});
+    window.addEventListener("pointerup",function(){dg=false;});
     slider(controls,{label:"a₂.x",min:-1,max:4,val:a2[0],step:.1,fmt:function(x){return x.toFixed(1);},on:function(x){a2[0]=x;draw();}});
     slider(controls,{label:"a₂.y",min:-1,max:3.5,val:a2[1],step:.1,fmt:function(x){return x.toFixed(1);},on:function(x){a2[1]=x;draw();}});
   });
