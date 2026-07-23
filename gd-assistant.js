@@ -155,6 +155,40 @@ function sourcesHtml(hits){
   if(!hits||!hits.length)return"";
   return '<div class="gda-srcwrap"><div class="gda-srch-h">Sources</div><ul class="gda-src">'+hits.map(function(o){return srcItem(o.L,"");}).join("")+'</ul></div>';
 }
+/* A written answer should end on sentence-closing punctuation. If the AI reply
+   ends mid-word/mid-sentence (a truncated proxy response) or is implausibly short,
+   treat it as cut off so we can complete it from the grounded course notes. */
+function looksTruncated(t){
+  t=(t||"").trim(); if(!t)return false;
+  if(t.length<24)return true;
+  return !/[.!?…)"'`\]]$/.test(t);
+}
+/* The guaranteed-complete core answer: the glossary definition(s) of the term(s)
+   asked about, or failing that the best lesson summary. Appended only when the
+   AI reply came back cut off, so students never see a dangling half-sentence. */
+function groundedSupplement(q){
+  var g=glossHits(q), parts=[];
+  if(g.length){ g.forEach(function(x){parts.push('<p class="gda-def"><b>'+esc(x.term)+'</b> — '+esc(x.desc)+'</p>');}); }
+  else { var s=pickSummary(retrieve(q)); if(s)parts.push('<p class="gda-def">'+esc(s)+'</p>'); }
+  return parts.length?('<p class="gda-hint">Here’s the key point in full, from the course notes:</p>'+parts.join("")):"";
+}
+/* Render $…$ / $$…$$ / \(…\) / \[…\] math in a freshly-added bubble, using the same
+   KaTeX settings as the lessons. Retries briefly while the deferred KaTeX finishes loading;
+   if KaTeX never loads (e.g. offline) the raw text is simply left as-is. */
+function typesetMath(root, tries){
+  if(!window.renderMathInElement){ if((tries||0)<40) setTimeout(function(){typesetMath(root,(tries||0)+1);},120); return; }
+  try{
+    window.renderMathInElement(root,{
+      delimiters:[
+        {left:"$$",right:"$$",display:true},
+        {left:"$", right:"$", display:false},
+        {left:"\\[",right:"\\]",display:true},
+        {left:"\\(",right:"\\)",display:false}
+      ],
+      throwOnError:false, ignoredTags:["script","noscript","style","textarea","pre","code"]
+    });
+  }catch(e){}
+}
 
 /* ---------- UI ---------- */
 var EXAMPLES=["What is backpropagation?","How does self-attention work?","RAG vs fine-tuning?","Explain the bias–variance tradeoff","How do I pick a learning rate?"];
@@ -174,6 +208,7 @@ function boot(){
   function addBubble(who,html){
     var b=el("div","gda-msg gda-"+who,html);msgs.appendChild(b);msgs.scrollTop=msgs.scrollHeight;
     [].forEach.call(b.querySelectorAll(".gda-srch"),function(a){a.onclick=function(e){e.preventDefault();toggle(false);if(window.gdSearchOpen)window.gdSearchOpen("");};});
+    typesetMath(b);
     return b;
   }
   function welcome(){
@@ -193,7 +228,7 @@ function boot(){
     function done(txt,err,hits){   /* shared: render the AI answer, or fall back to the offline answer */
       setBusy(false);typing.remove();
       if(err||!txt){var r=retrievalAnswer(q);addBubble("bot",'<p class="gda-err">Couldn’t get an AI answer'+(err?" ("+esc(err)+")":"")+'. Here’s what the course says:</p>'+r.html);}
-      else { addBubble("bot",mdToHtml(txt)+sourcesHtml(hits)); if(aiMode&&firstTurn)cachePut(q,txt,hits); convo.push({role:"user",text:q}); convo.push({role:"model",text:txt}); if(convo.length>12)convo=convo.slice(-12); }
+      else { var cut=looksTruncated(txt); addBubble("bot",mdToHtml(txt)+(cut?groundedSupplement(q):"")+sourcesHtml(hits)); if(aiMode&&firstTurn&&!cut)cachePut(q,txt,hits); convo.push({role:"user",text:q}); convo.push({role:"model",text:txt}); if(convo.length>12)convo=convo.slice(-12); }
     }
     if(proxyUrl()){ askViaProxy(q,convo.slice(-6),done); }   /* owner AI for everyone, with follow-up memory */
     else if(cfg().key){ askViaKey(q,done); }           /* power user's own key */
