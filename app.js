@@ -135,7 +135,14 @@
   function renderLesson(id) {
     const entry = FLAT[indexOf(id)];
     contentEl.innerHTML = "";
-    if (!entry) { contentEl.appendChild(el("p", null, "Lesson not found.")); return; }
+    if (!entry) {
+      const es = el("div", "empty-state",
+        `<div class="empty-mark">∑</div><h2>Page not found</h2><p>That link doesn’t match a lesson. Head back to your roadmap to keep going.</p>`);
+      es.appendChild(actionBtn("◈ Back to home", "#home", "primary"));
+      contentEl.appendChild(es);
+      crumbsEl.innerHTML = ""; document.title = "Not found — Math for AI Engineers";
+      return;
+    }
 
     const c = CONTENT[id];
     contentEl.dataset.track = entry.track.id;
