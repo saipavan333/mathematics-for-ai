@@ -83,24 +83,24 @@
   .gda-fab{right:16px;bottom:76px}          /* sit above the study-tools dock on small screens */
   .gda-panel{left:8px;right:8px;bottom:8px;width:auto;max-width:none;height:82vh;max-height:none}
 }
-@media(prefers-color-scheme:dark){
-  .gda-panel{background:#0f172a;border-color:#1e293b}
-  .gda-msgs{background:#0b1220}
-  .gda-bot{background:#1e293b;border-color:#334155;color:#e2e8f0}
-  .gda-settings{background:#111c31;border-color:#1e293b}
-  .gda-set-l{color:#cbd5e1}
-  .gda-set-l input{background:#0b1220;border-color:#334155;color:#e2e8f0}
-  .gda-chip{background:#1e293b;border-color:#334155;color:#c7d2fe}
-  .gda-in{background:#0b1220;border-color:#334155;color:#e2e8f0}
-  .gda-inrow,.gda-foot{background:#0f172a;border-color:#1e293b}
-  .gda-def{background:#052e22;border-color:#0f5132;color:#a7f3d0}
-  .gda-def b{color:#6ee7b7}
-  .gda-msg code{background:#1e293b}
-  .gda-detail{color:#64748b}
-  .gda-clear{border-color:#334155;color:#94a3b8}
-  .gda-set-back{color:#a5b4fc}
-  .gda-hint{border-top-color:#1e293b}
-}
+.gda-mathblock{margin:8px 0;overflow-x:auto}      /* KaTeX display math ($$…$$) as its own block */
+/* dark theme follows the app's own data-theme toggle (single source of truth), not the OS setting */
+html[data-theme="dark"] .gda-panel{background:#0f172a;border-color:#1e293b}
+html[data-theme="dark"] .gda-msgs{background:#0b1220}
+html[data-theme="dark"] .gda-bot{background:#1e293b;border-color:#334155;color:#e2e8f0}
+html[data-theme="dark"] .gda-settings{background:#111c31;border-color:#1e293b}
+html[data-theme="dark"] .gda-set-l{color:#cbd5e1}
+html[data-theme="dark"] .gda-set-l input{background:#0b1220;border-color:#334155;color:#e2e8f0}
+html[data-theme="dark"] .gda-chip{background:#1e293b;border-color:#334155;color:#c7d2fe}
+html[data-theme="dark"] .gda-in{background:#0b1220;border-color:#334155;color:#e2e8f0}
+html[data-theme="dark"] .gda-inrow,html[data-theme="dark"] .gda-foot{background:#0f172a;border-color:#1e293b}
+html[data-theme="dark"] .gda-def{background:#052e22;border-color:#0f5132;color:#a7f3d0}
+html[data-theme="dark"] .gda-def b{color:#6ee7b7}
+html[data-theme="dark"] .gda-msg code{background:#1e293b}
+html[data-theme="dark"] .gda-detail{color:#64748b}
+html[data-theme="dark"] .gda-clear{border-color:#334155;color:#94a3b8}
+html[data-theme="dark"] .gda-set-back{color:#a5b4fc}
+html[data-theme="dark"] .gda-hint{border-top-color:#1e293b}
 @media(prefers-reduced-motion:reduce){
   .gda-fab,.gda-panel,.gda-send,.gda-chip,.gda-gear,.gda-close{transition:none}
   .gda-typing i{animation:none;opacity:.7}

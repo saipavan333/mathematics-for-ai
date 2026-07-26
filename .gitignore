@@ -5,3 +5,5 @@ content/__synctest.js
 *.log
 .DS_Store
 Thumbs.db
+ai-math/
+.DS_Store

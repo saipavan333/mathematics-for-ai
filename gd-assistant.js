@@ -123,10 +123,14 @@ function askViaProxy(q,history,cb){
   var rq=q;   /* for a short follow-up ("why?", "an example?") retrieve using the previous question too */
   if(history&&history.length){var lastU="";for(var i=history.length-1;i>=0;i--){if(history[i].role==="user"){lastU=history[i].text;break;}} if(lastU&&q.split(/\s+/).length<=4)rq=lastU+" "+q;}
   var built=buildContext(rq);
-  fetch(proxyUrl(),{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:q,context:built.ctx,history:history||[]})})
-    .then(function(r){return r.json();})
-    .then(function(j){ if(j&&j.error){cb(null,j.error,built.hits);return;} cb((j&&j.answer)||"",null,built.hits); })
-    .catch(function(e){cb(null,(e&&e.message)||"Network error",built.hits);});
+  var ctl=(typeof AbortController!=="undefined")?new AbortController():null;
+  var timer=setTimeout(function(){if(ctl)ctl.abort();},22000);   /* don't spin the typing dots forever on a hung Worker */
+  fetch(proxyUrl(),{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:q,context:built.ctx,history:history||[]}),signal:ctl?ctl.signal:undefined})
+    .then(function(r){
+      if(!r.ok){clearTimeout(timer);cb(null,(r.status===429?"the assistant is busy right now — try again in a moment":"the assistant service is unavailable ("+r.status+")"),built.hits);return;}
+      return r.json().then(function(j){ clearTimeout(timer); if(j&&j.error){cb(null,j.error,built.hits);return;} cb((j&&j.answer)||"",null,built.hits); });
+    })
+    .catch(function(e){clearTimeout(timer);cb(null,(e&&e.name==="AbortError")?"the assistant took too long to respond":((e&&e.message)||"network error"),built.hits);});
 }
 /* Optional advanced path: a power-user student's own Anthropic key (used only if no proxy is set). */
 function askViaKey(q,cb){
@@ -144,12 +148,19 @@ function askViaKey(q,cb){
 }
 function mdToHtml(t){
   t=esc(t).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/`([^`]+)`/g,"<code>$1</code>");
+  /* pull display-math ($$…$$ / \[…\]) OUT before the paragraph splitter, so a block written
+     across multiple lines isn't torn into separate <p>s (which would stop KaTeX matching it). */
+  var blocks=[];
+  t=t.replace(/\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]/g,function(m){blocks.push(m);return " B"+(blocks.length-1)+" ";});
   var lines=t.split(/\n/),out=[],inl=false;
   lines.forEach(function(ln){
     if(/^\s*[-*]\s+/.test(ln)){if(!inl){out.push("<ul>");inl=true;}out.push("<li>"+ln.replace(/^\s*[-*]\s+/,"")+"</li>");}
     else{if(inl){out.push("</ul>");inl=false;}if(ln.trim())out.push("<p>"+ln+"</p>");}
   });
-  if(inl)out.push("</ul>");return out.join("");
+  if(inl)out.push("</ul>");
+  var html=out.join("");
+  html=html.replace(/(?:<p>)? B(\d+) (?:<\/p>)?/g,function(_,i){return blocks[+i]==null?_:'<div class="gda-mathblock">'+blocks[+i]+'</div>';});
+  return html;
 }
 function sourcesHtml(hits){
   if(!hits||!hits.length)return"";
@@ -160,8 +171,7 @@ function sourcesHtml(hits){
    treat it as cut off so we can complete it from the grounded course notes. */
 function looksTruncated(t){
   t=(t||"").trim(); if(!t)return false;
-  if(t.length<24)return true;
-  return !/[.!?…)"'`\]]$/.test(t);
+  return !/[.!?…)"'`\]]$/.test(t);   // no terminal punctuation ⇒ cut off (length alone over-flagged terse but complete answers)
 }
 /* The guaranteed-complete core answer: the glossary definition(s) of the term(s)
    asked about, or failing that the best lesson summary. Appended only when the
@@ -267,6 +277,13 @@ function boot(){
     panel.querySelector(".gda-inrow").addEventListener("submit",function(e){e.preventDefault();submit();});
     input.addEventListener("keydown",function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();submit();}});
     input.addEventListener("input",autoresize);
+    panel.addEventListener("keydown",function(e){   /* focus trap: keep Tab inside the open dialog */
+      if(e.key!=="Tab")return;
+      var f=[].filter.call(panel.querySelectorAll('button,[href],input,textarea,[tabindex]:not([tabindex="-1"])'),function(x){return !x.disabled&&x.offsetParent!==null;});
+      if(!f.length)return; var first=f[0],lastEl=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();lastEl.focus();}
+      else if(!e.shiftKey&&document.activeElement===lastEl){e.preventDefault();first.focus();}
+    });
     welcome(); updateMode(); built=true;
   }
   function toggle(v){

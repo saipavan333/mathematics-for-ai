@@ -94,6 +94,9 @@ function injectA11y(){
     if(!main.hasAttribute("tabindex")) main.setAttribute("tabindex","-1");
     if(!document.querySelector(".gdx-skip")){
       var s=document.createElement("a"); s.className="gdx-skip"; s.href="#"+main.id; s.textContent="Skip to content";
+      /* focus the content directly — DON'T let the href change the hash, or the SPA router
+         would treat "#content" as an unknown lesson id and wipe the page. */
+      s.addEventListener("click",function(e){ e.preventDefault(); var m=document.getElementById(main.id)||main; try{m.setAttribute("tabindex","-1"); m.focus();}catch(_){} if(m.scrollIntoView){ m.scrollIntoView(); } });
       document.body.insertBefore(s, document.body.firstChild);
     }
   }

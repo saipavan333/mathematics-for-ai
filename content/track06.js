@@ -385,7 +385,7 @@ print("max slope at x=0:", round(float(sig(0)*(1-sig(0))), 3), "(saturates -> ~0
     { q: "If $y=f(u)$, $u=g(v)$, $v=h(x)$, then $\\frac{dy}{dx}$ is…", options: ["$f'(u)g'(v)h'(x)$", "$f'(u)+g'(v)+h'(x)$", "$f'(u)h'(x)$", "$f'g'h'/3$"], answer: 0,
       explain: "Chain rule across three stages multiplies all three local rates — exactly how backprop chains layers." },
     { q: "Ten stacked sigmoids each contribute a slope factor ≤ 0.25. The gradient through all ten is bounded by…", options: ["$0.25^{10}\\approx10^{-6}$", "$0.25\\times10$", "$0.25$", "1"], answer: 0,
-      explain: "The factors multiply: $0.25^{10}\\approx9.5\\times10^{-7}$ — vanishing gradients, the reason ReLU/residуals exist." }
+      explain: "The factors multiply: $0.25^{10}\\approx9.5\\times10^{-7}$ — vanishing gradients, the reason ReLU/residuals exist." }
   ],
 
   practice: [

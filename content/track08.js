@@ -297,7 +297,7 @@ print("f(λx+(1-λ)y) <= λf(x)+(1-λ)f(y) always:", ok)   # True -> convex
   minibatch estimate $\nabla f_{\text{batch}}$.</p>`,
 
   derivation: String.raw`<p><strong>Convergence rate on a quadratic, and the optimal learning rate.</strong> Work in the
-  Hessian's eigenbasis (Track 5.2), so $f=\tfrac12\sum_i\lambda_i z_i^2$.</p>
+  Hessian's eigenbasis (Track 5.2), so $f=\tfrac12\sum_i\lambda_i z_i^2$. Because a symmetric Hessian has orthogonal eigenvectors, rotating coordinates into that frame turns the coupled bowl into a sum of independent 1-D parabolas — so gradient descent moves along each axis $z_i$ on its own.</p>
   <p><strong>Step 1 — per-axis recursion.</strong> The gradient in $z_i$ is $\lambda_i z_i$, so
   $z_i^{(t+1)}=z_i^{(t)}-\eta\lambda_i z_i^{(t)}=(1-\eta\lambda_i)z_i^{(t)}$. After $t$ steps,
   $z_i^{(t)}=(1-\eta\lambda_i)^t z_i^{(0)}$.</p>

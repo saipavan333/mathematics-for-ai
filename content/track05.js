@@ -466,7 +466,7 @@ print("min x^T (M^T M) x over random x:", round(float(worst), 4), ">= 0")
   $A\mathbf v_i=\mathbf 0=\sigma_i\mathbf u_i$.</p>
   <p><strong>Step 5 — assemble.</strong> Stacking $A\mathbf v_i=\sigma_i\mathbf u_i$ as columns: $AV=U\Sigma$. Since $V$
   is orthogonal, $A=U\Sigma V^\top.\;\blacksquare$ Plain English: the eigenvectors of $A^\top A$ are the input axes, their
-  square-rooted eigenvalues are the stretches, and $A$ maps each input axis to an output axis.</p>`,
+  square-rooted eigenvalues are the stretches, and $A$ maps each input axis to an output axis. (We built the output directions for $\sigma_i>0$ — the <strong>economy</strong> SVD, exactly what <code>full_matrices=False</code> returns below; the full square $U\in\mathbb R^{m\times m}$ simply appends any orthonormal completion of these $\mathbf u_i$.)</p>`,
 
   code: [
     { label: "SVD: factor, reconstruct, read singular values", src: String.raw`

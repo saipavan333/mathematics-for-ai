@@ -11,10 +11,12 @@ window.WIDGETS = {};
 
   function elt(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
   function card(mount) { var w = elt("div", "widget"); mount.appendChild(w); return w; }
-  function canvasIn(wrap, w, h) {
-    var cv = elt("canvas"); cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+  function canvasIn(wrap, w, h, label) {
+    var dpr = (typeof window !== "undefined" && window.devicePixelRatio) ? window.devicePixelRatio : 1;  /* per-mount, stays crisp after zoom / monitor change */
+    var cv = elt("canvas"); cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
     cv.style.width = w + "px"; cv.style.height = h + "px"; cv.style.touchAction = "none";
-    wrap.appendChild(cv); var ctx = cv.getContext("2d"); ctx.scale(DPR, DPR);
+    cv.setAttribute("role", "img"); cv.setAttribute("aria-label", label || "Interactive visualization");
+    wrap.appendChild(cv); var ctx = cv.getContext("2d"); ctx.scale(dpr, dpr);
     return { cv: cv, ctx: ctx };
   }
   function controlsIn(wrap) { var c = elt("div", "widget-controls"); wrap.appendChild(c); return c; }

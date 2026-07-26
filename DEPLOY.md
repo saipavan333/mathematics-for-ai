@@ -21,13 +21,21 @@ pushing updates later.
    - Leave everything else default and click **Create repository**.
 
 3. **Upload the files.** On the new repo's page, click **uploading an existing file**
-   (or **Add file → Upload files**). Then, from this `Mathematics` folder, select **all**
-   of these and drag them into the browser:
-   - `index.html`, `styles.css`, `app.js`, `curriculum.js`
-   - the entire **`content`** folder
+   (or **Add file → Upload files**). Then **upload ALL the files and folders in this
+   `Mathematics` folder** — the site needs every one of them. If you leave out the assistant
+   or the widget/diagram files, the page still opens but is broken (no "Ask AI", no
+   interactive figures). Select everything and drag it into the browser. The pieces that
+   must go up:
+   - **Page & engine:** `index.html`, `styles.css`, `app.js`, `curriculum.js`
+   - **Course assistant:** `gd-assistant.js`, `gd-assistant.css`, `assistant-config.js`,
+     `assistant-data.js`
+   - **Shared UI extras:** `gd-extras.js`, `gd-extras.css`
+   - the entire **`content`** folder (all the tracks and `capstones.js`, plus `widgets.js`,
+     `diagrams.js`, and `nutshells.js`)
    - `.nojekyll`  *(if you don't see it, turn on "show hidden files" in your file explorer;
      it's important)*
-   - the `.md` files are optional but nice to include
+   - the `.md` files (`README.md`, `DEPLOY.md`, `ASSISTANT-SETUP.md`, …) are optional but
+     nice to include
    Click **Commit changes**.
 
 4. **Turn on Pages.** In the repo, go to **Settings** (top tab) → **Pages** (left sidebar,

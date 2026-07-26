@@ -55,10 +55,17 @@ index.html               # app shell — loads everything below
 styles.css               # theme
 app.js                   # lesson engine (nav, routing, quizzes, in-browser code runner)
 curriculum.js            # the track/lesson map (sidebar + prev/next order)
+gd-assistant.js / .css   # the "Ask AI" course assistant (offline retrieval by default)
+assistant-data.js        # the offline index it answers from (lesson summaries + glossary)
+assistant-config.js      # your Worker URL for optional AI mode (see ASSISTANT-SETUP.md)
+gd-extras.js / .css      # small shared extras (creator byline, resume-where-you-left-off, effects)
 content/
-  track01.js … track13.js  # the 13 core tracks
-  track14.js …             # bridge tracks (added over time)
+  track01.js … track17.js  # the core tracks + bridge tracks
   capstones.js             # the 5 runnable projects
+  widgets.js               # interactive in-lesson widgets (canvas, no libraries)
+  diagrams.js              # the hand-drawn SVG diagram for each lesson
+  nutshells.js             # the one-sentence "in one breath" intro per lesson
+ASSISTANT-SETUP.md         # turn on the optional free AI mode for the assistant
 DIAGRAM_GOLDEN_STANDARD.md # rules every hand-drawn diagram must satisfy
 DEPLOY.md                  # step-by-step publishing guide
 ```

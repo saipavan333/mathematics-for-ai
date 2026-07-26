@@ -135,11 +135,14 @@ print("sample mean ≈", round(float(x.mean()), 3), " vs 1/λ =", round(1/lam, 3
     <line x1="20" y1="110" x2="240" y2="110" stroke="#94a3b8"/>
     <path d="M30,110 C80,110 95,30 130,30 C165,30 180,110 230,110 Z" fill="#eef0ff" stroke="#4f46e5" stroke-width="2"/>
     <line x1="130" y1="110" x2="130" y2="30" stroke="#dc2626" stroke-dasharray="3 3"/>
-    <line x1="103" y1="110" x2="103" y2="66" stroke="#94a3b8"/><line x1="157" y1="110" x2="157" y2="66" stroke="#94a3b8"/>
-    <text x="120" y="124" font-size="10" fill="#dc2626" font-family="sans-serif">μ</text>
-    <text x="88" y="124" font-size="10" fill="#64748b" font-family="sans-serif">−σ</text>
-    <text x="150" y="124" font-size="10" fill="#64748b" font-family="sans-serif">+σ</text>
-    <text x="94" y="56" font-size="10" fill="#4f46e5" font-family="sans-serif">68% within ±1σ</text>
+    <line x1="103" y1="110" x2="103" y2="64" stroke="#6366f1" stroke-opacity=".55"/><line x1="157" y1="110" x2="157" y2="64" stroke="#6366f1" stroke-opacity=".55"/>
+    <line x1="76" y1="110" x2="76" y2="90" stroke="#94a3b8" stroke-opacity=".65"/><line x1="184" y1="110" x2="184" y2="90" stroke="#94a3b8" stroke-opacity=".65"/>
+    <line x1="49" y1="110" x2="49" y2="102" stroke="#94a3b8" stroke-opacity=".45"/><line x1="211" y1="110" x2="211" y2="102" stroke="#94a3b8" stroke-opacity=".45"/>
+    <text x="127" y="123" font-size="9" fill="#dc2626" font-family="sans-serif">μ</text>
+    <text x="95" y="123" font-size="8" fill="#64748b" font-family="sans-serif">−σ</text><text x="151" y="123" font-size="8" fill="#64748b" font-family="sans-serif">+σ</text>
+    <text x="67" y="123" font-size="8" fill="#94a3b8" font-family="sans-serif">−2σ</text><text x="177" y="123" font-size="8" fill="#94a3b8" font-family="sans-serif">+2σ</text>
+    <text x="40" y="123" font-size="8" fill="#94a3b8" font-family="sans-serif">−3σ</text><text x="204" y="123" font-size="8" fill="#94a3b8" font-family="sans-serif">+3σ</text>
+    <text x="110" y="50" font-size="9" fill="#4f46e5" font-family="sans-serif">68 · 95 · 99.7%</text>
   </svg>
   <figcaption>The bell: centered at μ, width σ, with the 68–95–99.7 rule.</figcaption>
   </figure>`,

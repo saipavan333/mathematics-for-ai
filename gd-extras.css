@@ -17,7 +17,7 @@
 
 /* ---- creator byline ---- */
 .gdx-topcredit{position:relative;z-index:6;text-align:center;padding:6px 14px;font:600 11.5px system-ui,-apple-system,sans-serif;color:#94a3b8;background:linear-gradient(90deg,rgba(79,70,229,.05),rgba(124,58,237,.05));border-bottom:1px solid rgba(148,163,184,.16)}
-.gdx-credit{margin-top:44px;padding:22px 16px 32px;text-align:center;font:600 12.5px system-ui,-apple-system,sans-serif;color:#94a3b8;border-top:1px solid rgba(148,163,184,.18);background:linear-gradient(180deg,transparent,rgba(124,58,237,.035))}
+.gdx-credit{margin:40px auto 26px;max-width:min(520px,calc(100% - 32px));width:max-content;padding:9px 20px;text-align:center;font:600 12.5px system-ui,-apple-system,sans-serif;color:var(--ink-soft,#475569);border:1px solid var(--line,rgba(148,163,184,.28));border-radius:999px;background:color-mix(in srgb, var(--bg-card,#fff) 70%, transparent);-webkit-backdrop-filter:blur(9px) saturate(1.05);backdrop-filter:blur(9px) saturate(1.05);box-shadow:0 10px 30px -14px rgba(20,24,40,.30)}
 .gdx-credit .gdx-sig,.gdx-topcredit .gdx-sig,.gdx-headcredit .gdx-sig,.gdx-sidecredit .gdx-sig{display:inline-flex;align-items:center;gap:9px}
 .gdx-credit .gdx-sig::before,.gdx-credit .gdx-sig::after,.gdx-topcredit .gdx-sig::before,.gdx-topcredit .gdx-sig::after,.gdx-headcredit .gdx-sig::before,.gdx-headcredit .gdx-sig::after,.gdx-sidecredit .gdx-sig::before,.gdx-sidecredit .gdx-sig::after{content:"\2726";color:#a5b4fc;font-size:11px;opacity:.85}
 .gdx-credit b,.gdx-topcredit b,.gdx-headcredit b,.gdx-sidecredit b{font-weight:800;background:linear-gradient(90deg,#4f46e5,#7c3aed,#059669,#4f46e5);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:#6d5ae6;animation:gdxSheen 9s linear infinite}
@@ -50,11 +50,9 @@
 .gdx-back:hover{background:rgba(79,70,229,.10)}
 .gdx-back:focus-visible{outline:2px solid #7c3aed;outline-offset:2px}
 
-@media(prefers-color-scheme:dark){
-  .gdx-credit{color:#64748b;border-top-color:rgba(148,163,184,.14);background:linear-gradient(180deg,transparent,rgba(124,58,237,.06))}
-  .gdx-topcredit{color:#64748b;border-bottom-color:rgba(148,163,184,.12);background:linear-gradient(90deg,rgba(79,70,229,.10),rgba(124,58,237,.10))}
-  .gdx-resume{background:linear-gradient(120deg,#1e293b,#141d33);border-color:#334155}
-  .gdx-resume-tx span{color:#e2e8f0}
-  .gdx-back{color:#a5b4fc}
-  .gdx-back:hover{background:rgba(165,180,252,.14)}
-}
+/* dark theme follows the app's data-theme toggle; the .gdx-credit banner auto-themes via the app's CSS vars */
+html[data-theme="dark"] .gdx-topcredit{color:#94a3b8;border-bottom-color:rgba(148,163,184,.12);background:linear-gradient(90deg,rgba(79,70,229,.10),rgba(124,58,237,.10))}
+html[data-theme="dark"] .gdx-resume{background:linear-gradient(120deg,#1e293b,#141d33);border-color:#334155}
+html[data-theme="dark"] .gdx-resume-tx span{color:#e2e8f0}
+html[data-theme="dark"] .gdx-back{color:#a5b4fc}
+html[data-theme="dark"] .gdx-back:hover{background:rgba(165,180,252,.14)}

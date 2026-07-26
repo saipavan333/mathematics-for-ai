@@ -58,15 +58,21 @@
 
       const head = document.createElement("div");
       head.className = "track-head";
+      head.setAttribute("role", "button");
+      head.setAttribute("tabindex", "0");
+      head.setAttribute("aria-expanded", String(!collapsedSet.has(tr.id)));
       head.innerHTML =
         `<span class="track-num">${tr.id}</span>` +
         `<span class="track-title">${tr.short || tr.title}</span>` +
-        `<span class="chev">▾</span>`;
-      head.addEventListener("click", () => {
+        `<span class="chev" aria-hidden="true">▾</span>`;
+      const toggleTrack = () => {
         wrap.classList.toggle("collapsed");
+        head.setAttribute("aria-expanded", String(!wrap.classList.contains("collapsed")));
         const c = [...document.querySelectorAll(".track.collapsed")].map(e => e.dataset.track);
         LS.set("collapsed", c);
-      });
+      };
+      head.addEventListener("click", toggleTrack);
+      head.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleTrack(); } });
       wrap.appendChild(head);
 
       const ul = document.createElement("ul");
@@ -93,7 +99,7 @@
     document.querySelectorAll(".lessons a").forEach(a => a.classList.toggle("active", a.dataset.id === id));
     const trk = FLAT[indexOf(id)] && FLAT[indexOf(id)].track.id;
     const w = navEl.querySelector(`.track[data-track="${trk}"]`);
-    if (w && w.classList.contains("collapsed")) w.classList.remove("collapsed");
+    if (w && w.classList.contains("collapsed")) { w.classList.remove("collapsed"); const h = w.querySelector(".track-head"); if (h) h.setAttribute("aria-expanded", "true"); }
   }
 
   /* ============================================================
@@ -113,9 +119,17 @@
   function sectionNode(cls, label, builder) {
     const callout = ["s-ai", "s-key", "s-miss", "s-deep"].includes(cls);
     const sec = el("div", "section " + cls + (callout ? " callout" : ""));
-    sec.appendChild(el("div", "section-label", label));
+    sec.appendChild(el("h3", "section-label", label));   /* real heading for in-lesson AT navigation */
     builder(sec);
     return sec;
+  }
+  /* tracks 1–13 wrap prose in <p>; tracks 14–17 + capstones ship bare text — normalise so
+     every lesson gets paragraph spacing and blank-line breaks become real paragraphs. */
+  function proseHTML(str) {
+    const t = String(str == null ? "" : str).trim();
+    if (!t) return "";
+    if (/^<(p|figure|ul|ol|div|table|h[1-6]|blockquote|pre)\b/i.test(t)) return str;   // already block-structured
+    return t.split(/\n\s*\n/).map(p => "<p>" + p.trim() + "</p>").join("");
   }
 
   function renderLesson(id) {
@@ -150,7 +164,15 @@
         if (key === "__practice")  return renderPractice(c.practice, cls, label);
         if (key === "__widget")    return renderWidget(id, cls, label);
         if (c[key]) contentEl.appendChild(
-          sectionNode(cls, label, s => s.appendChild(el("div", "section-body", c[key]))));
+          sectionNode(cls, label, s => {
+            const isDiagram = (key === "diagram");
+            const body = el("div", "section-body", isDiagram ? c[key] : proseHTML(c[key]));
+            if (isDiagram) {                                   /* label the inline SVG for screen readers */
+              const svg = body.querySelector("svg");
+              if (svg && !svg.getAttribute("role")) { svg.setAttribute("role", "img"); if (!svg.getAttribute("aria-label")) svg.setAttribute("aria-label", entry.title + " — diagram"); }
+            }
+            s.appendChild(body);
+          }));
       });
       renderCompleteRow(id);
     }
@@ -680,16 +702,19 @@ _json.dumps(__imgs)`;
     function size() {
       W = window.innerWidth; H = window.innerHeight;
       cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      const target = Math.max(60, Math.min(130, Math.round(W * H / 17000)));
+      const small = W < 700; const target = Math.max(small ? 30 : 60, Math.min(small ? 55 : 130, Math.round(W * H / 17000)));
       while (pts.length < target) pts.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .26, vy: (Math.random() - .5) * .26, c: hues[pts.length % hues.length] });
       pts.length = target;
     }
     size();
     const mouse = { x: -999, y: -999 };
     window.addEventListener("pointermove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    const reduce = false; /* animations always on, by explicit request */
-    let raf = 0;
-    function frame() {
+    const reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);  /* honor OS reduce-motion: paint one static frame */
+    let raf = 0, last = 0;
+    function frame(ts) {
+      ts = ts || 0;
+      if (last && ts - last < 30) { raf = requestAnimationFrame(frame); return; }   /* ~30fps cap — decorative backdrop, saves battery */
+      last = ts;
       ctx.clearRect(0, 0, W, H);
       for (const p of pts) {
         const dx = mouse.x - p.x, dy = mouse.y - p.y, d2 = dx * dx + dy * dy;
@@ -721,10 +746,12 @@ _json.dumps(__imgs)`;
     function size() { const r = cv.getBoundingClientRect(); W = r.width || 760; H = r.height || 200; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
     size();
     for (let i = 0; i < 6; i++) blobs.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .16, vy: (Math.random() - .5) * .12, r: Math.max(W, H) * (0.34 + Math.random() * 0.24), c: cols[i % cols.length], ph: Math.random() * 7 });
-    const reduce = false; /* animations always on, by explicit request */
-    let raf = 0, t = 0;
+    const reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    let raf = 0, t = 0, rt;
+    function onResize() { clearTimeout(rt); rt = setTimeout(size, 200); }
+    function onVis() { if (!document.hidden && !reduce && cv.isConnected && !raf) raf = requestAnimationFrame(frame); }
     function frame() {
-      if (!cv.isConnected) { raf = 0; return; }
+      if (!cv.isConnected) { window.removeEventListener("resize", onResize); document.removeEventListener("visibilitychange", onVis); raf = 0; return; }   /* clean up when the dashboard is replaced */
       ctx.clearRect(0, 0, W, H); t += 0.006;
       for (const b of blobs) {
         b.x += b.vx + Math.sin(t + b.ph) * 0.14; b.y += b.vy + Math.cos(t * 0.8 + b.ph) * 0.11;
@@ -736,8 +763,8 @@ _json.dumps(__imgs)`;
       }
       if (!reduce) raf = requestAnimationFrame(frame);
     }
-    document.addEventListener("visibilitychange", () => { if (!document.hidden && !reduce && cv.isConnected && !raf) raf = requestAnimationFrame(frame); });
-    let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(size, 200); });
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("resize", onResize);
     frame();
   }
 
