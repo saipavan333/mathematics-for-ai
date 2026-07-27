@@ -108,5 +108,11 @@
 .mh-ra-btn.on{ background:var(--accent); color:#fff; border-color:var(--accent); }
 .mh-ra-voice{ border:1px solid var(--line); background:var(--bg-card); color:var(--ink-soft); font:600 12px system-ui; padding:6px 9px; border-radius:9px; max-width:180px; cursor:pointer; }
 
-/* ---- nav active state for hub links ---- */
-.sidenav-btn.mh-active{ background:color-mix(in srgb,var(--accent) 12%,transparent); color:var(--accent); }
+/* ---- "Study hub" sidebar section (own vertical list, never the Home/Review flex row) ---- */
+.sidebar{ overflow-x:hidden; }                       /* belt-and-suspenders: never a horizontal scrollbar */
+.mh-hub{ display:flex; flex-direction:column; gap:1px; padding:4px 8px 10px; margin:0 4px 6px; border-bottom:1px solid var(--line); }
+.mh-hub-h{ font:800 10px system-ui; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-faint); padding:2px 8px 6px; }
+.mh-hub-btn{ display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:9px; text-decoration:none; color:var(--ink-soft); font:600 13px system-ui; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:background .13s,color .13s; }
+.mh-hub-btn:hover{ background:color-mix(in srgb,var(--accent) 9%,transparent); color:var(--accent); }
+.mh-hub-btn.mh-active{ background:color-mix(in srgb,var(--accent) 13%,transparent); color:var(--accent); }
+.mh-hub-ic{ flex:none; width:18px; text-align:center; opacity:.85; }

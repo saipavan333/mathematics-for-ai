@@ -41,7 +41,7 @@
   }
   function setActive(route) {
     document.querySelectorAll(".lessons a.active").forEach(function (a) { a.classList.remove("active"); });
-    document.querySelectorAll(".sidenav-btn.mh-active").forEach(function (a) { a.classList.remove("mh-active"); });
+    document.querySelectorAll(".mh-active").forEach(function (a) { a.classList.remove("mh-active"); });
     var b = document.getElementById("mh-nav-" + route); if (b) b.classList.add("mh-active");
     var cr = document.getElementById("crumbs"); if (cr) cr.innerHTML = "<b>Study hub</b>";
     var ln = document.getElementById("lessonNav"); if (ln) ln.innerHTML = "";
@@ -339,11 +339,15 @@
   function injectNav() {
     var sidenav = document.querySelector(".sidenav");
     if (!sidenav) { if ((injectNav._t = (injectNav._t || 0) + 1) < 50) setTimeout(injectNav, 120); return; }
-    if (document.getElementById("mh-nav-glossary")) return;
-    [["map", "&#9678; Concept map"], ["glossary", "&#9782; Glossary"], ["cheatsheets", "&#9636; Cheat sheets"],
-    ["interview", "&#9998; Interview bank"], ["exam", "&#9873; Job-readiness exam"]].forEach(function (l) {
-      var a = el("a", "sidenav-btn mh-nav-btn", l[1]); a.id = "mh-nav-" + l[0]; a.href = "#" + l[0]; sidenav.appendChild(a);
+    if (document.getElementById("mh-hub")) return;
+    var hub = el("nav", "mh-hub"); hub.id = "mh-hub"; hub.setAttribute("aria-label", "Study hub");
+    hub.appendChild(el("div", "mh-hub-h", "Study hub"));
+    [["map", "&#9678;", "Concept map"], ["glossary", "&#9782;", "Glossary"], ["cheatsheets", "&#9636;", "Cheat sheets"],
+    ["interview", "&#9998;", "Interview bank"], ["exam", "&#9873;", "Job-readiness exam"]].forEach(function (l) {
+      var a = el("a", "mh-hub-btn", '<span class="mh-hub-ic" aria-hidden="true">' + l[1] + "</span> " + l[2]);
+      a.id = "mh-nav-" + l[0]; a.href = "#" + l[0]; hub.appendChild(a);
     });
+    sidenav.parentNode.insertBefore(hub, sidenav.nextSibling);   /* own vertical section, not the Home/Review flex row */
   }
 
   window.MHUB = {
