@@ -1,0 +1,112 @@
+/* features.css — study-hub extras (glossary, cheat sheets, interview bank, exam,
+   concept map, tooltips, read-aloud). Namespaced .mh-*. Uses the app's CSS vars so
+   it themes with the in-app light/dark toggle automatically. */
+
+/* ---- shared page shell ---- */
+.mh-page{ max-width:var(--maxw,820px); margin:0 auto; padding:6px 2px 40px; }
+.mh-head{ margin:8px 0 22px; }
+.mh-eyebrow{ font:800 12px/1 -apple-system,system-ui,sans-serif; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.mh-head h2{ font-size:30px; line-height:1.14; margin:0 0 8px; letter-spacing:-.01em; color:var(--ink); }
+.mh-lead{ color:var(--ink-soft); font-size:16px; line-height:1.55; margin:0; max-width:62ch; }
+.mh-empty{ color:var(--ink-faint); font-style:italic; padding:18px 2px; }
+.mh-count{ color:var(--ink-faint); font:600 12.5px system-ui; margin:2px 0 14px; }
+
+/* ---- search / filters ---- */
+.mh-search{ width:100%; padding:11px 15px; border:1px solid var(--line-strong,var(--line)); border-radius:12px; background:var(--bg-card); color:var(--ink); font:500 15px system-ui; margin-bottom:18px; }
+.mh-search:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+.mh-iv-filters{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:6px; }
+.mh-chip-row{ display:flex; gap:7px; flex-wrap:wrap; }
+.mh-chip{ border:1px solid var(--line-strong,var(--line)); background:var(--bg-card); color:var(--ink-soft); font:700 12.5px system-ui; padding:7px 13px; border-radius:999px; cursor:pointer; transition:.14s; }
+.mh-chip:hover{ border-color:var(--accent); color:var(--accent); }
+.mh-chip.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.mh-select{ border:1px solid var(--line-strong,var(--line)); background:var(--bg-card); color:var(--ink); font:600 13px system-ui; padding:8px 12px; border-radius:10px; cursor:pointer; }
+.mh-select:focus{ outline:none; border-color:var(--accent); }
+
+/* ---- glossary ---- */
+.mh-gloss-list{ margin:0; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.mh-gloss-item{ background:var(--bg-card); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:12px; padding:13px 15px; box-shadow:0 1px 2px rgba(16,24,40,.04); }
+.mh-gloss-item dt{ font:800 15px system-ui; color:var(--ink); margin:0 0 4px; }
+.mh-gloss-item dd{ margin:0; color:var(--ink-soft); font-size:14px; line-height:1.5; }
+@media (max-width:720px){ .mh-gloss-list{ grid-template-columns:1fr; } }
+
+/* ---- cheat sheets ---- */
+.mh-cheat-card{ background:var(--bg-card); border:1px solid var(--line); border-radius:16px; padding:16px 18px; margin:0 0 16px; box-shadow:0 2px 10px -6px rgba(16,24,40,.18); border-top:3px solid var(--th,var(--accent)); }
+.mh-cheat-h{ font-size:17px; margin:0 0 12px; color:var(--ink); display:flex; align-items:center; gap:10px; }
+.mh-cheat-num{ flex:none; min-width:24px; height:24px; padding:0 7px; display:inline-flex; align-items:center; justify-content:center; border-radius:7px; background:color-mix(in srgb, var(--th,var(--accent)) 16%, transparent); color:color-mix(in srgb, var(--th,var(--accent)) 62%, var(--ink)); font:800 12px system-ui; }
+.mh-cheat-body{ display:grid; grid-template-columns:1fr 1fr; gap:8px 22px; }
+.mh-cheat-item{ padding:6px 0; border-top:1px solid var(--line); }
+.mh-cheat-lnk{ display:inline-flex; gap:7px; align-items:baseline; text-decoration:none; color:var(--ink); font:700 13.5px system-ui; }
+.mh-cheat-lnk:hover{ color:var(--accent); }
+.mh-cheat-id{ color:var(--ink-faint); font-variant-numeric:tabular-nums; font-size:12px; }
+.mh-cheat-kps{ margin:5px 0 0; padding-left:18px; }
+.mh-cheat-kps li{ color:var(--ink-soft); font-size:13px; line-height:1.5; margin:2px 0; }
+.mh-cheat-nut{ margin:4px 0 0; color:var(--ink-soft); font-size:13px; font-style:italic; }
+@media (max-width:720px){ .mh-cheat-body{ grid-template-columns:1fr; } }
+
+/* ---- interview bank ---- */
+.mh-iv-list{ display:flex; flex-direction:column; gap:12px; }
+.mh-iv-q{ background:var(--bg-card); border:1px solid var(--line); border-radius:13px; padding:14px 16px; box-shadow:0 1px 2px rgba(16,24,40,.04); }
+.mh-iv-meta{ display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
+.mh-badge{ flex:none; font:800 10.5px system-ui; letter-spacing:.04em; text-transform:uppercase; padding:3px 9px; border-radius:999px; color:#fff; }
+.mh-lv-easy{ background:#04835c; } .mh-lv-med{ background:#0176b3; } .mh-lv-hard{ background:#c4490a; }
+.mh-iv-src{ font:600 12.5px system-ui; color:var(--ink-faint); text-decoration:none; }
+.mh-iv-src:hover{ color:var(--accent); text-decoration:underline; }
+.mh-iv-prompt{ color:var(--ink); font-size:15px; line-height:1.6; }
+.mh-reveal{ margin-top:11px; border:1px solid var(--line-strong,var(--line)); background:var(--bg-side,transparent); color:var(--accent); font:700 12.5px system-ui; padding:7px 13px; border-radius:9px; cursor:pointer; }
+.mh-reveal:hover{ border-color:var(--accent); }
+.mh-iv-sol{ margin-top:11px; padding:12px 14px; border-radius:10px; background:color-mix(in srgb, var(--c-deriv,#04835c) 8%, var(--bg-card)); border:1px solid color-mix(in srgb, var(--c-deriv,#04835c) 22%, var(--line)); color:var(--ink-soft); font-size:14.5px; line-height:1.6; }
+
+/* ---- exam ---- */
+.mh-exam{ display:flex; flex-direction:column; gap:14px; }
+.mh-exam-q{ background:var(--bg-card); border:1px solid var(--line); border-radius:13px; padding:15px 17px; }
+.mh-exam-qt{ font:600 15.5px system-ui; color:var(--ink); line-height:1.5; margin-bottom:11px; }
+.mh-exam-opts{ display:flex; flex-direction:column; gap:8px; }
+.mh-exam-opt{ text-align:left; border:1px solid var(--line-strong,var(--line)); background:var(--bg-side,var(--bg-card)); color:var(--ink); font:500 14.5px system-ui; padding:10px 13px; border-radius:10px; cursor:pointer; transition:.12s; }
+.mh-exam-opt:hover{ border-color:var(--accent); }
+.mh-exam-opt.sel{ border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 26%, transparent) inset; }
+.mh-exam-opt.correct{ border-color:#04835c; background:color-mix(in srgb,#04835c 12%,var(--bg-card)); color:var(--ink); font-weight:700; }
+.mh-exam-opt.wrong{ border-color:#c0392b; background:color-mix(in srgb,#c0392b 12%,var(--bg-card)); }
+.mh-exam-exp{ margin-top:11px; padding-top:10px; border-top:1px dashed var(--line); color:var(--ink-soft); font-size:14px; line-height:1.55; }
+.mh-exam-submit{ align-self:flex-start; margin-top:18px; border:none; background:linear-gradient(135deg,var(--accent),#7c3aed); color:#fff; font:700 15px system-ui; padding:12px 26px; border-radius:12px; cursor:pointer; box-shadow:0 8px 22px -8px var(--accent); }
+.mh-exam-submit:hover{ filter:brightness(1.06); }
+.mh-exam-result{ margin-top:16px; padding:18px 20px; border-radius:14px; font-size:16px; line-height:1.5; color:var(--ink); }
+.mh-exam-result b{ font-size:22px; }
+.mh-exam-result.pass{ background:color-mix(in srgb,#04835c 12%,var(--bg-card)); border:1px solid color-mix(in srgb,#04835c 30%,var(--line)); }
+.mh-exam-result.fail{ background:color-mix(in srgb,#c4490a 10%,var(--bg-card)); border:1px solid color-mix(in srgb,#c4490a 28%,var(--line)); }
+
+/* ---- concept map ---- */
+.mh-map{ display:flex; flex-direction:column; gap:0; }
+.mh-phase{ display:flex; gap:16px; padding:0 0 22px; position:relative; }
+.mh-phase-side{ flex:none; width:34px; display:flex; flex-direction:column; align-items:center; }
+.mh-phase-n{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font:800 15px Georgia,serif; color:#fff; background:linear-gradient(135deg,var(--accent),#7c3aed); box-shadow:0 4px 12px -4px var(--accent); z-index:1; }
+.mh-phase:not(:last-child) .mh-phase-side::after{ content:""; position:absolute; top:34px; bottom:0; width:2px; background:linear-gradient(var(--line-strong,var(--line)),transparent); }
+.mh-phase-main{ flex:1; min-width:0; }
+.mh-phase-h h3{ margin:4px 0 2px; font-size:17px; color:var(--ink); }
+.mh-phase-h p{ margin:0 0 12px; color:var(--ink-faint); font-size:13.5px; }
+.mh-track-row{ display:flex; flex-wrap:wrap; gap:10px; }
+.mh-track-node{ display:flex; flex-direction:column; gap:5px; text-decoration:none; width:150px; padding:11px 13px; border-radius:12px; background:var(--bg-card); border:1px solid var(--line); border-top:3px solid var(--th,var(--accent)); box-shadow:0 2px 8px -5px rgba(16,24,40,.2); transition:transform .14s ease,box-shadow .14s ease; }
+.mh-track-node:hover{ transform:translateY(-2px); box-shadow:0 10px 22px -10px color-mix(in srgb,var(--th,var(--accent)) 60%,transparent); }
+.mh-track-node.done{ border-color:color-mix(in srgb,#04835c 40%,var(--line)); }
+.mh-track-id{ font:800 12px system-ui; color:color-mix(in srgb, var(--th,var(--accent)) 60%, var(--ink)); }
+.mh-track-name{ font:700 13.5px system-ui; color:var(--ink); line-height:1.25; }
+.mh-track-prog{ height:5px; border-radius:3px; background:var(--line); overflow:hidden; }
+.mh-track-prog span{ display:block; height:100%; background:var(--th,var(--accent)); }
+.mh-track-meta{ font:600 11px system-ui; color:var(--ink-faint); }
+@media (max-width:520px){ .mh-track-node{ width:calc(50% - 5px); } }
+
+/* ---- inline term tooltips ---- */
+.mh-term{ position:relative; border-bottom:1.5px dotted color-mix(in srgb,var(--accent) 55%,var(--ink)); cursor:help; }
+.mh-term:focus{ outline:2px solid var(--accent); outline-offset:2px; border-radius:2px; }
+.mh-tip{ position:absolute; left:0; bottom:calc(100% + 8px); width:min(280px,72vw); z-index:60; background:var(--ink); color:#fff; font:500 13px/1.5 system-ui; padding:9px 12px; border-radius:10px; box-shadow:0 12px 30px -8px rgba(0,0,0,.5); opacity:0; visibility:hidden; transform:translateY(4px); transition:opacity .14s ease,transform .14s ease; pointer-events:none; }
+.mh-tip::after{ content:""; position:absolute; top:100%; left:16px; border:6px solid transparent; border-top-color:var(--ink); }
+.mh-term:hover .mh-tip, .mh-term:focus .mh-tip, .mh-term.open .mh-tip{ opacity:1; visibility:visible; transform:none; }
+
+/* ---- read-aloud ---- */
+.mh-ra{ display:flex; align-items:center; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.mh-ra-btn{ border:1px solid var(--line-strong,var(--line)); background:var(--bg-card); color:var(--accent); font:700 12.5px system-ui; padding:7px 13px; border-radius:999px; cursor:pointer; transition:.14s; }
+.mh-ra-btn:hover{ border-color:var(--accent); }
+.mh-ra-btn.on{ background:var(--accent); color:#fff; border-color:var(--accent); }
+.mh-ra-voice{ border:1px solid var(--line); background:var(--bg-card); color:var(--ink-soft); font:600 12px system-ui; padding:6px 9px; border-radius:9px; max-width:180px; cursor:pointer; }
+
+/* ---- nav active state for hub links ---- */
+.sidenav-btn.mh-active{ background:color-mix(in srgb,var(--accent) 12%,transparent); color:var(--accent); }

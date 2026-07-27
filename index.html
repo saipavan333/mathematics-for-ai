@@ -28,7 +28,14 @@
 <!-- Pyodide: runs NumPy / matplotlib in the browser -->
 <script defer src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 
+<!-- PWA: installable + offline -->
+<meta name="theme-color" content="#4f46e5">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="features.css">
 </head>
 <body>
 <div class="app" id="app">
@@ -90,8 +97,14 @@
 <script src="content/diagrams.js"></script>
 <script src="content/widgets.js"></script>
 
+<!-- glossary / lesson index data: shared by the AI assistant AND the glossary + tooltip features -->
+<script src="assistant-data.js"></script>
+
 <!-- engine: navigation, rendering, code execution -->
 <script src="app.js"></script>
+
+<!-- study-hub extras: glossary, cheat sheets, interview bank, exam, concept map, read-aloud, PWA -->
+<script defer src="features.js"></script>
   <!-- AI course assistant + creator byline (byline-only: the SPA owns its own nav/effects) -->
   <script>window.GDX_BYLINE_ONLY=true;</script>
   <link rel="stylesheet" href="gd-assistant.css">

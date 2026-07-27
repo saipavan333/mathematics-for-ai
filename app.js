@@ -185,7 +185,7 @@
     }
 
     /* math + meta */
-    typesetMath(contentEl, 0, function () { crossLink(contentEl); });
+    typesetMath(contentEl, 0, function () { crossLink(contentEl); if (window.MHUB && window.MHUB.onLesson) window.MHUB.onLesson(contentEl, id); });
     crumbsEl.innerHTML = `<b>${entry.track.title}</b> &nbsp;›&nbsp; ${entry.title}`;
     document.title = id + " " + entry.title + " — Math for AI Engineers";
     buildLessonNav(id);
@@ -851,6 +851,7 @@ _json.dumps(__imgs)`;
 
   function go() {
     const raw = (location.hash || "").replace(/^#/, "");
+    if (window.MHUB && window.MHUB.routes[raw]) { window.MHUB.render(raw); if (window.innerWidth <= 880) closeMenu(); return; }   // study-hub feature routes
     if (raw === "home")   { renderDashboard(); refreshStats(); if (window.innerWidth <= 880) closeMenu(); return; }
     if (raw === "review") { renderReview();    refreshStats(); if (window.innerWidth <= 880) closeMenu(); return; }
     const id = raw || LS.get("last", null);
