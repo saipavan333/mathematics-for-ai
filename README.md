@@ -75,3 +75,7 @@ DEPLOY.md                  # step-by-step publishing guide
 Pure vanilla JavaScript — no framework, no bundler, no server. Everything is static files,
 which is why it deploys to GitHub Pages (or any static host) in a couple of minutes.
 Adding a track later = dropping in its `content/trackNN.js` and one line in `curriculum.js`.
+
+## Licence
+
+© 2026 Sai Pavan UE. Free to read and share with credit, not for commercial use: [CC BY-NC 4.0](LICENSE).
